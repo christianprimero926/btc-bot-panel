@@ -3,222 +3,226 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bot BTC Trend-Following — Panel</title>
+<title>Panel de Bots — Trend-Following</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
 <style>
-  :root{
-    --bg:#0d1117; --card:#161b22; --border:#272e3a; --txt:#e6edf3; --dim:#8b949e;
-    --green:#2ea043; --greenbg:#12261a; --red:#da3633; --amber:#d29922; --accent:#58a6ff;
-  }
+  :root{--bg:#0d1117;--card:#161b22;--border:#272e3a;--txt:#e6edf3;--dim:#8b949e;--green:#2ea043;--greenbg:#12261a;--red:#da3633;--amber:#d29922;--accent:#58a6ff}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:16px;max-width:900px;margin:0 auto}
   h1{font-size:18px;margin:0 0 2px}
-  .sub{color:var(--dim);font-size:13px;margin-bottom:16px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px}
+  h2{font-size:16px;margin:26px 0 4px;display:flex;align-items:center;gap:8px}
+  .sub{color:var(--dim);font-size:13px;margin-bottom:8px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
   .status{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-  .badge{font-size:15px;font-weight:700;padding:8px 16px;border-radius:999px}
+  .badge{font-size:14px;font-weight:700;padding:7px 14px;border-radius:999px}
   .badge.cash{background:#21262d;color:var(--dim)}
   .badge.long{background:var(--greenbg);color:var(--green);border:1px solid var(--green)}
-  .equity{font-size:34px;font-weight:800;letter-spacing:-.5px}
-  .ret{font-size:16px;font-weight:700}
-  .pos{color:var(--green)} .neg{color:var(--red)} .flat{color:var(--dim)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
-  .metric{background:#0f141b;border:1px solid var(--border);border-radius:10px;padding:12px}
+  .equity{font-size:30px;font-weight:800;letter-spacing:-.5px}
+  .ret{font-size:15px;font-weight:700}
+  .pos{color:var(--green)}.neg{color:var(--red)}.flat{color:var(--dim)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+  .metric{background:#0f141b;border:1px solid var(--border);border-radius:10px;padding:11px}
   .metric .k{color:var(--dim);font-size:12px;margin-bottom:4px}
-  .metric .v{font-size:18px;font-weight:700}
+  .metric .v{font-size:17px;font-weight:700}
   .lbl{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
   table{width:100%;border-collapse:collapse;font-size:13px}
-  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border)}
+  th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--border)}
   th{color:var(--dim);font-weight:600}
   .muted{color:var(--dim);font-size:13px}
-  .foot{color:var(--dim);font-size:12px;text-align:center;margin-top:8px}
-  a{color:var(--accent);text-decoration:none}
+  .foot{color:var(--dim);font-size:12px;text-align:center;margin-top:16px}
   .reload{background:#21262d;color:var(--txt);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer}
   .reload:active{background:#30363d}
   svg{width:100%;display:block}
-  #btcchart{height:300px} #chart{height:170px}
+  .cchart{height:280px}.echart{height:150px}
   .dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--green);margin-right:6px;vertical-align:middle}
   .tf{background:#21262d;color:var(--dim);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:12px;cursor:pointer;margin-left:4px}
   .tf.on{background:var(--accent);color:#0d1117;border-color:var(--accent);font-weight:700}
-  #live{font-size:11px;font-weight:700;letter-spacing:.3px}
+  .live{font-size:11px;font-weight:700}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   .livepulse{animation:pulse 1.4s ease-in-out infinite}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tile{background:#0f141b;border:1px solid var(--border);border-radius:10px;padding:12px}
+  .tile .n{font-size:13px;color:var(--dim)}.tile .e{font-size:22px;font-weight:800}
 </style>
 </head>
 <body>
-  <h1>🤖 Bot BTC Trend-Following <span style="font-weight:400;color:var(--dim)">(paper)</span></h1>
-  <div class="sub"><span class="dot"></span><span id="freshness">cargando…</span> · <button class="reload" onclick="manual()">↻ Actualizar</button></div>
+  <h1>🤖 Panel de Bots — Trend-Following <span style="font-weight:400;color:var(--dim)">(paper)</span></h1>
+  <div class="sub"><span class="dot"></span><span id="fresh">cargando…</span> · <button class="reload" onclick="manual()">↻ Actualizar</button></div>
 
   <div class="card">
-    <div class="status">
-      <span id="badge" class="badge cash">…</span>
-      <div>
-        <div id="equity" class="equity">—</div>
-        <div id="ret" class="ret flat">—</div>
-      </div>
+    <div class="tiles">
+      <div class="tile"><div class="n">₿ Bitcoin</div><div class="e" id="t_btc">—</div><div id="t_btc_b" class="muted">—</div></div>
+      <div class="tile"><div class="n">📈 QQQ (Nasdaq-100)</div><div class="e" id="t_qqq">—</div><div id="t_qqq_b" class="muted">—</div></div>
     </div>
   </div>
 
+  <!-- ===== BTC ===== -->
+  <h2>₿ Bitcoin <span class="live" id="b_live"></span></h2>
   <div class="card">
-    <div class="grid">
-      <div class="metric"><div class="k">Precio BTC</div><div class="v" id="price">—</div></div>
-      <div class="metric"><div class="k">Media 100 días (SMA)</div><div class="v" id="sma">—</div></div>
-      <div class="metric"><div class="k">Distancia a la media</div><div class="v" id="gap">—</div></div>
-      <div class="metric"><div class="k">Saldo en USDT</div><div class="v" id="balance">—</div></div>
+    <div class="status"><span id="b_badge" class="badge cash">…</span>
+      <div><div id="b_equity" class="equity">—</div><div id="b_ret" class="ret flat">—</div></div></div>
+    <div class="grid" style="margin-top:14px">
+      <div class="metric"><div class="k">Precio</div><div class="v" id="b_price">—</div></div>
+      <div class="metric"><div class="k" id="b_smak">Media</div><div class="v" id="b_sma">—</div></div>
+      <div class="metric"><div class="k">Distancia a la media</div><div class="v" id="b_gap">—</div></div>
+      <div class="metric"><div class="k">Saldo USDT</div><div class="v" id="b_balance">—</div></div>
     </div>
-    <p class="muted" id="reason" style="margin:12px 0 0">—</p>
+    <p class="muted" id="b_reason" style="margin:12px 0 0">—</p>
   </div>
-
   <div class="card">
-    <div class="lbl">
-      <span>BTC/USDT — velas <span id="live"></span></span>
-      <span>
-        <button class="tf" data-i="1d" data-l="120" onclick="setTf(this)">1D</button>
-        <button class="tf on" data-i="4h" data-l="120" onclick="setTf(this)">4H</button>
-        <button class="tf" data-i="1h" data-l="120" onclick="setTf(this)">1H</button>
-        <button class="tf" data-i="15m" data-l="120" onclick="setTf(this)">15m</button>
-      </span>
+    <div class="lbl"><span>Velas BTC/USDT</span><span>
+      <button class="tf" data-i="1d" onclick="setTf(this)">1D</button>
+      <button class="tf on" data-i="4h" onclick="setTf(this)">4H</button>
+      <button class="tf" data-i="1h" onclick="setTf(this)">1H</button>
+      <button class="tf" data-i="15m" onclick="setTf(this)">15m</button></span></div>
+    <svg id="b_chart" class="cchart" viewBox="0 0 800 280" preserveAspectRatio="none"></svg>
+    <div class="muted" id="b_cnote"></div>
+  </div>
+  <div class="card"><div class="lbl"><span>Equity (inicio $1,000)</span></div>
+    <svg id="b_eq" class="echart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg><div class="muted" id="b_eqnote"></div></div>
+  <div class="card"><div class="lbl"><span>Operaciones</span></div><div id="b_trades"><span class="muted">…</span></div></div>
+
+  <!-- ===== QQQ ===== -->
+  <h2>📈 QQQ — Nasdaq-100</h2>
+  <div class="card">
+    <div class="status"><span id="q_badge" class="badge cash">…</span>
+      <div><div id="q_equity" class="equity">—</div><div id="q_ret" class="ret flat">—</div></div></div>
+    <div class="grid" style="margin-top:14px">
+      <div class="metric"><div class="k">Precio</div><div class="v" id="q_price">—</div></div>
+      <div class="metric"><div class="k" id="q_smak">Media</div><div class="v" id="q_sma">—</div></div>
+      <div class="metric"><div class="k">Distancia a la media</div><div class="v" id="q_gap">—</div></div>
+      <div class="metric"><div class="k">Saldo USD</div><div class="v" id="q_balance">—</div></div>
     </div>
-    <svg id="btcchart" viewBox="0 0 800 300" preserveAspectRatio="none"></svg>
-    <div class="muted" id="btcnote"></div>
+    <p class="muted" id="q_reason" style="margin:12px 0 0">—</p>
   </div>
+  <div class="card"><div class="lbl"><span>Velas QQQ (diario)</span></div>
+    <svg id="q_chart" class="cchart" viewBox="0 0 800 280" preserveAspectRatio="none"></svg>
+    <div class="muted" id="q_cnote"></div></div>
+  <div class="card"><div class="lbl"><span>Equity (inicio $1,000)</span></div>
+    <svg id="q_eq" class="echart" viewBox="0 0 600 150" preserveAspectRatio="none"></svg><div class="muted" id="q_eqnote"></div></div>
+  <div class="card"><div class="lbl"><span>Operaciones</span></div><div id="q_trades"><span class="muted">…</span></div></div>
 
-  <div class="card">
-    <div class="lbl"><span>Tu curva de equity (inicio $1,000)</span></div>
-    <svg id="chart" viewBox="0 0 600 170" preserveAspectRatio="none"></svg>
-    <div class="muted" id="chartnote"></div>
-  </div>
-
-  <div class="card">
-    <div class="lbl"><span>Operaciones</span></div>
-    <div id="trades"><span class="muted">…</span></div>
-  </div>
-
-  <div class="foot">El bot decide con la vela diaria · revisa cada 4 h en GitHub Actions</div>
+  <div class="foot">Bots de trend-following · deciden con la vela diaria · revisan solos en GitHub Actions · modo paper</div>
 
 <script>
 const $=id=>document.getElementById(id);
 const money=n=>"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const KHOSTS=["https://data-api.binance.vision","https://api.binance.com"];
 const WSHOSTS=["wss://data-stream.binance.vision/ws/","wss://stream.binance.com:9443/ws/"];
-const BTC={i:"4h",l:120,klines:[],ws:null,gen:0};
-
+let freshest=0;
 async function fetchText(f){const r=await fetch(f+"?t="+Date.now());if(!r.ok)throw new Error(f+" "+r.status);return r.text();}
-async function klines(sym,interval,limit){
-  for(const h of KHOSTS){try{const r=await fetch(`${h}/api/v3/klines?symbol=${sym}&interval=${interval}&limit=${limit}`);if(r.ok)return await r.json();}catch(e){}}
-  throw new Error("sin klines");
-}
+async function klines(sym,interval,limit){for(const h of KHOSTS){try{const r=await fetch(`${h}/api/v3/klines?symbol=${sym}&interval=${interval}&limit=${limit}`);if(r.ok)return await r.json();}catch(e){}}throw new Error("sin klines");}
 function parseCSV(t){const l=t.trim().split(/\r?\n/);const h=l[0].split(",");return l.slice(1).map(r=>{const c=r.split(",");const o={};h.forEach((k,i)=>o[k]=c[i]);return o;});}
-function ago(utc){const d=new Date(utc.replace(" UTC","Z").replace(" ","T"));const m=Math.round((Date.now()-d)/60000);if(m<1)return"hace segundos";if(m<60)return`hace ${m} min`;const h=Math.round(m/60);if(h<24)return`hace ${h} h`;return`hace ${Math.round(h/24)} d`;}
-function setLive(on){const el=$("live");el.textContent=on?"● EN VIVO":"◌ diferido";el.style.color=on?"#2ea043":"#8b949e";el.className=on?"livepulse":"";}
+function ago(utc){const d=new Date(utc.replace(" UTC","Z").replace(" ","T"));if(d.getTime()>freshest)freshest=d.getTime();const m=Math.round((Date.now()-d)/60000);if(m<1)return"hace segundos";if(m<60)return`hace ${m} min`;const h=Math.round(m/60);if(h<24)return`hace ${h} h`;return`hace ${Math.round(h/24)} d`;}
 
-// ---------- Gráfico de velas BTC (histórico REST + tiempo real WebSocket) ----------
-function setTf(btn){document.querySelectorAll(".tf").forEach(b=>b.classList.remove("on"));btn.classList.add("on");BTC.i=btn.dataset.i;BTC.l=+btn.dataset.l;loadBtc();}
-
-async function loadBtc(){
+// ---- estado, equity, operaciones (genérico por bot) ----
+async function renderStatus(p,cur){
   try{
-    const raw=await klines("BTCUSDT",BTC.i,Math.min(1000,BTC.l+100));
-    BTC.klines=raw.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4]}));
-    renderBtc();
-    connectWs();
-  }catch(e){$("btcchart").innerHTML="";$("btcnote").textContent="No se pudo cargar el gráfico de BTC desde esta red.";setLive(false);}
+    const s=JSON.parse(await fetchText(p.status));
+    ago(s.updated_utc);
+    const isLong=s.position==="LONG";
+    $(p.id+"badge").className="badge "+(isLong?"long":"cash");
+    $(p.id+"badge").textContent=isLong?"● COMPRADO (LONG)":"○ EN CASH (fuera)";
+    $(p.id+"equity").textContent=money(s.equity);
+    const ret=(s.equity/s.start_capital-1)*100;
+    $(p.id+"ret").textContent=(ret>=0?"+":"")+ret.toFixed(2)+"% desde el inicio";
+    $(p.id+"ret").className="ret "+(ret>0.001?"pos":ret<-0.001?"neg":"flat");
+    $(p.id+"price").textContent=money(s.price);
+    $(p.id+"sma").textContent=money(s.sma);
+    $(p.id+"smak").textContent="Media "+(s.sma_period||"")+" días";
+    const gap=(s.price/s.sma-1)*100;
+    $(p.id+"gap").textContent=(gap>=0?"+":"")+gap.toFixed(1)+"% "+(gap>=0?"↑ dentro":"↓ cash");
+    $(p.id+"gap").className="v "+(gap>=0?"pos":"neg");
+    $(p.id+"balance").textContent=money(s.balance_usdt);
+    $(p.id+"reason").textContent=s.reason;
+    $(p.tile).textContent=money(s.equity);
+    $(p.tileb).textContent=(isLong?"● dentro · ":"○ cash · ")+((ret>=0?"+":"")+ret.toFixed(1)+"%");
+    $(p.tileb).className=ret>0.001?"pos":ret<-0.001?"neg":"muted";
+  }catch(e){$(p.tile).textContent="—";}
+  try{const eq=parseCSV(await fetchText(p.eq)).map(r=>+r.equity).filter(n=>!isNaN(n));drawEquity(p.eqsvg,p.eqnote,eq);}
+  catch(e){$(p.eqnote).textContent="La curva aparece cuando el bot lleve un par de días.";}
+  try{
+    const tr=parseCSV(await fetchText(p.tr)).reverse();if(!tr.length)throw 0;
+    let h="<table><tr><th>Fecha</th><th>Acción</th><th>Precio</th><th>PnL</th></tr>";
+    tr.forEach(t=>{const pnl=t.pnl_pct?(t.pnl_pct+"%"):"—";const cl=t.pnl_pct?(parseFloat(t.pnl_pct)>=0?"pos":"neg"):"";
+      h+=`<tr><td>${(t.fecha_utc||"").replace(" UTC","")}</td><td>${t.accion}</td><td>${money(t.precio)}</td><td class="${cl}">${pnl}</td></tr>`;});
+    $(p.trdiv).innerHTML=h+"</table>";
+  }catch(e){$(p.trdiv).innerHTML='<span class="muted">Sin operaciones todavía — el bot espera su señal.</span>';}
 }
-function renderBtc(){
-  const arr=BTC.klines;if(arr.length<2)return;
+function drawEquity(svgId,noteId,v){
+  const svg=$(svgId);svg.innerHTML="";
+  if(v.length<2){$(noteId).textContent="Se dibuja con ≥2 puntos (1 por día).";return;}
+  $(noteId).textContent="";
+  const W=600,H=150,pad=6,mn=Math.min(...v,1000),mx=Math.max(...v,1000),rng=(mx-mn)||1;
+  const x=i=>pad+i*(W-2*pad)/(v.length-1),y=n=>H-pad-(n-mn)/rng*(H-2*pad),yb=y(1000);
+  svg.innerHTML+=`<line x1="0" y1="${yb}" x2="${W}" y2="${yb}" stroke="#3d444d" stroke-dasharray="4 4"/>`;
+  const last=v[v.length-1],col=last>=1000?"#2ea043":"#da3633";
+  svg.innerHTML+=`<polyline points="${v.map((n,i)=>x(i)+","+y(n)).join(" ")}" fill="none" stroke="${col}" stroke-width="2"/><circle cx="${x(v.length-1)}" cy="${y(last)}" r="3.5" fill="${col}"/>`;
+}
+
+// ---- velas (compartido: BTC en vivo y QQQ diario) ----
+function paintCandles(svgId,noteId,arr,smaN,showN,noteHtml){
+  const svg=$(svgId);if(arr.length<2){svg.innerHTML="";return;}
   const closes=arr.map(k=>k.c);
-  const smaAt=i=>{if(i<99)return null;let s=0;for(let j=i-99;j<=i;j++)s+=closes[j];return s/100;};
-  const N=arr.length,start=Math.max(0,N-BTC.l);
+  const smaAt=i=>{if(i<smaN-1)return null;let s=0;for(let j=i-smaN+1;j<=i;j++)s+=closes[j];return s/smaN;};
+  const N=arr.length,start=Math.max(0,N-showN);
   const view=[];for(let i=start;i<N;i++)view.push({...arr[i],sma:smaAt(i)});
   let lo=Infinity,hi=-Infinity;view.forEach(d=>{lo=Math.min(lo,d.l);hi=Math.max(hi,d.h);if(d.sma!=null){lo=Math.min(lo,d.sma);hi=Math.max(hi,d.sma);}});
-  const W=800,H=300,pT=10,pB=8,pL=6,pR=62,rng=(hi-lo)||1;
-  const slot=(W-pL-pR)/view.length,cw=Math.max(1.5,slot*0.7);
-  const cx=i=>pL+i*slot+slot/2,y=v=>pT+(hi-v)/rng*(H-pT-pB);
-  let s="";
+  const W=800,H=280,pT=8,pB=8,pL=6,pR=62,rng=(hi-lo)||1,slot=(W-pL-pR)/view.length,cw=Math.max(1.5,slot*0.7);
+  const cx=i=>pL+i*slot+slot/2,y=v=>pT+(hi-v)/rng*(H-pT-pB);let s="";
   let pts=[];view.forEach((d,i)=>{if(d.sma!=null)pts.push(cx(i)+","+y(d.sma));});
   if(pts.length>1)s+=`<polyline points="${pts.join(" ")}" fill="none" stroke="#d29922" stroke-width="1.5"/>`;
   view.forEach((d,i)=>{const up=d.c>=d.o,col=up?"#2ea043":"#da3633",X=cx(i);
-    s+=`<line x1="${X}" y1="${y(d.h)}" x2="${X}" y2="${y(d.l)}" stroke="${col}" stroke-width="1"/>`;
+    s+=`<line x1="${X}" y1="${y(d.h)}" x2="${X}" y2="${y(d.l)}" stroke="${col}"/>`;
     const yo=y(d.o),yc=y(d.c);s+=`<rect x="${X-cw/2}" y="${Math.min(yo,yc)}" width="${cw}" height="${Math.max(1,Math.abs(yo-yc))}" fill="${col}"/>`;});
   const last=view[view.length-1].c;
-  [[hi,"#8b949e"],[lo,"#8b949e"]].forEach(([v,c])=>{
-    s+=`<line x1="${pL}" y1="${y(v)}" x2="${W-pR}" y2="${y(v)}" stroke="#21262d" stroke-width="1"/>`;
-    s+=`<text x="${W-pR+4}" y="${y(v)+4}" fill="${c}" font-size="12">$${Math.round(v).toLocaleString()}</text>`;});
+  [[hi,"#8b949e"],[lo,"#8b949e"]].forEach(([v,c])=>{s+=`<line x1="${pL}" y1="${y(v)}" x2="${W-pR}" y2="${y(v)}" stroke="#21262d"/><text x="${W-pR+4}" y="${y(v)+4}" fill="${c}" font-size="12">$${Math.round(v).toLocaleString()}</text>`;});
   const lcol=last>=view[view.length-1].o?"#2ea043":"#da3633";
-  s+=`<line x1="${pL}" y1="${y(last)}" x2="${W-pR}" y2="${y(last)}" stroke="${lcol}" stroke-dasharray="3 3" stroke-width="1"/>`;
-  s+=`<rect x="${W-pR}" y="${y(last)-9}" width="${pR}" height="18" fill="${lcol}"/><text x="${W-pR+4}" y="${y(last)+4}" fill="#fff" font-size="12" font-weight="700">$${Math.round(last).toLocaleString()}</text>`;
-  $("btcchart").innerHTML=s;
-  $("btcnote").innerHTML='🟠 Línea naranja = media de 100 días. El bot <b>compra</b> cuando el precio cierra por <b>encima</b>, y pasa a <b>CASH</b> cuando cae por debajo.';
+  s+=`<line x1="${pL}" y1="${y(last)}" x2="${W-pR}" y2="${y(last)}" stroke="${lcol}" stroke-dasharray="3 3"/><rect x="${W-pR}" y="${y(last)-9}" width="${pR}" height="18" fill="${lcol}"/><text x="${W-pR+4}" y="${y(last)+4}" fill="#fff" font-size="12" font-weight="700">$${Math.round(last).toLocaleString()}</text>`;
+  svg.innerHTML=s;
+  $(noteId).innerHTML=noteHtml;
 }
+
+// ---- BTC: velas en vivo (WebSocket) ----
+const BTC={i:"4h",klines:[],ws:null,gen:0};
+function setLive(on){const el=$("b_live");el.textContent=on?"● EN VIVO":"◌ diferido";el.style.color=on?"#2ea043":"#8b949e";el.className="live"+(on?" livepulse":"");}
+function setTf(btn){document.querySelectorAll(".tf").forEach(b=>b.classList.remove("on"));btn.classList.add("on");BTC.i=btn.dataset.i;loadBtc();}
+async function loadBtc(){
+  try{const raw=await klines("BTCUSDT",BTC.i,220);BTC.klines=raw.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4]}));paintBtc();connectWs();}
+  catch(e){$("b_chart").innerHTML="";$("b_cnote").textContent="No se pudo cargar el gráfico de BTC.";setLive(false);}
+}
+function paintBtc(){paintCandles("b_chart","b_cnote",BTC.klines,100,120,'🟠 media 100 días · el bot <b>compra</b> cuando el precio cierra por <b>encima</b>.');}
 function connectWs(){
-  const gen=++BTC.gen;
-  if(BTC.ws){try{BTC.ws.close()}catch(e){}BTC.ws=null;}
-  let hi=0;
-  (function open(){
-    if(gen!==BTC.gen)return;
-    let ws;try{ws=new WebSocket(WSHOSTS[hi]+"btcusdt@kline_"+BTC.i);}catch(e){setLive(false);return;}
-    BTC.ws=ws;
-    ws.onopen=()=>{if(gen===BTC.gen)setLive(true);};
-    ws.onmessage=ev=>{if(gen!==BTC.gen)return;try{
-      const k=JSON.parse(ev.data).k;if(!k)return;
-      const c={t:+k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c};
-      const arr=BTC.klines,last=arr[arr.length-1];
-      if(last&&last.t===c.t)arr[arr.length-1]=c;
-      else{arr.push(c);while(arr.length>BTC.l+140)arr.shift();}
-      renderBtc();
-    }catch(e){}};
-    ws.onclose=()=>{if(gen!==BTC.gen)return;setLive(false);hi=(hi+1)%WSHOSTS.length;setTimeout(open,3000);};
-    ws.onerror=()=>{try{ws.close()}catch(e){}};
-  })();
+  const gen=++BTC.gen;if(BTC.ws){try{BTC.ws.close()}catch(e){}BTC.ws=null;}let hi=0;
+  (function open(){if(gen!==BTC.gen)return;let ws;try{ws=new WebSocket(WSHOSTS[hi]+"btcusdt@kline_"+BTC.i);}catch(e){setLive(false);return;}
+    BTC.ws=ws;ws.onopen=()=>{if(gen===BTC.gen)setLive(true);};
+    ws.onmessage=ev=>{if(gen!==BTC.gen)return;try{const k=JSON.parse(ev.data).k;if(!k)return;const c={t:+k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c};const a=BTC.klines,L=a[a.length-1];if(L&&L.t===c.t)a[a.length-1]=c;else{a.push(c);while(a.length>360)a.shift();}paintBtc();}catch(e){}};
+    ws.onclose=()=>{if(gen!==BTC.gen)return;setLive(false);hi=(hi+1)%WSHOSTS.length;setTimeout(open,3000);};ws.onerror=()=>{try{ws.close()}catch(e){}};})();
 }
 
-// ---------- Estado del bot (status/equity/operaciones) ----------
-async function refreshData(){
-  try{
-    const s=JSON.parse(await fetchText("status.json"));
-    $("freshness").textContent="Última revisión "+ago(s.updated_utc);
-    const isLong=s.position==="LONG";
-    $("badge").className="badge "+(isLong?"long":"cash");
-    $("badge").textContent=isLong?"● COMPRADO (LONG)":"○ EN CASH (fuera)";
-    $("equity").textContent=money(s.equity);
-    const ret=(s.equity/s.start_capital-1)*100;
-    $("ret").textContent=(ret>=0?"+":"")+ret.toFixed(2)+"% desde el inicio";
-    $("ret").className="ret "+(ret>0.001?"pos":ret<-0.001?"neg":"flat");
-    $("price").textContent=money(s.price);
-    $("sma").textContent=money(s.sma100);
-    const gap=(s.price/s.sma100-1)*100;
-    $("gap").textContent=(gap>=0?"+":"")+gap.toFixed(1)+"% "+(gap>=0?"↑ (compra)":"↓ (cash)");
-    $("gap").className="v "+(gap>=0?"pos":"neg");
-    $("balance").textContent=money(s.balance_usdt);
-    $("reason").textContent=s.reason;
-  }catch(e){$("freshness").textContent="esperando primeros datos del bot…";}
-  try{const eq=parseCSV(await fetchText("equity_history.csv")).map(r=>+r.equity).filter(n=>!isNaN(n));drawEquity(eq);}
-  catch(e){$("chartnote").textContent="La curva aparece cuando el bot lleve un par de días registrando.";}
-  try{
-    const tr=parseCSV(await fetchText("paper_trades.csv")).reverse();
-    if(!tr.length)throw 0;
-    let h="<table><tr><th>Fecha</th><th>Acción</th><th>Precio</th><th>PnL</th></tr>";
-    tr.forEach(t=>{const pnl=t.pnl_pct?(t.pnl_pct+"%"):"—";const cl=t.pnl_pct?(parseFloat(t.pnl_pct)>=0?"pos":"neg"):"";
-      h+=`<tr><td>${t.fecha_utc.replace(" UTC","")}</td><td>${t.accion}</td><td>${money(t.precio)}</td><td class="${cl}">${pnl}</td></tr>`;});
-    $("trades").innerHTML=h+"</table>";
-  }catch(e){$("trades").innerHTML='<span class="muted">Sin operaciones todavía. El bot está esperando que BTC supere su media de 100 días para comprar.</span>';}
+// ---- QQQ: velas diarias (CSV publicado por el bot) ----
+async function loadQqq(){
+  try{const rows=parseCSV(await fetchText("qqq_candles.csv"));
+    const arr=rows.map(r=>({o:+r.open,h:+r.high,l:+r.low,c:+r.close})).filter(k=>!isNaN(k.c));
+    paintCandles("q_chart","q_cnote",arr,150,120,'🟠 media 150 días · el bot está <b>dentro</b> cuando el precio está por <b>encima</b>.');}
+  catch(e){$("q_chart").innerHTML="";$("q_cnote").textContent="Las velas aparecen tras la primera ejecución del bot de QQQ.";}
 }
-function drawEquity(v){
-  const svg=$("chart");svg.innerHTML="";
-  if(v.length<2){$("chartnote").textContent="La curva se dibuja cuando haya al menos 2 puntos (1 por día).";return;}
-  $("chartnote").textContent="";
-  const W=600,H=170,pad=6,mn=Math.min(...v,1000),mx=Math.max(...v,1000),rng=(mx-mn)||1;
-  const x=i=>pad+i*(W-2*pad)/(v.length-1),y=n=>H-pad-(n-mn)/rng*(H-2*pad),yb=y(1000);
-  svg.innerHTML+=`<line x1="0" y1="${yb}" x2="${W}" y2="${yb}" stroke="#3d444d" stroke-dasharray="4 4" stroke-width="1"/>`;
-  const last=v[v.length-1],col=last>=1000?"#2ea043":"#da3633";
-  svg.innerHTML+=`<polyline points="${v.map((n,i)=>x(i)+","+y(n)).join(" ")}" fill="none" stroke="${col}" stroke-width="2"/>`;
-  svg.innerHTML+=`<circle cx="${x(v.length-1)}" cy="${y(last)}" r="3.5" fill="${col}"/>`;
-}
-function manual(){$("freshness").textContent="actualizando…";refreshData();loadBtc();}
 
-refreshData();
-loadBtc();
-setInterval(refreshData,300000);   // estado del bot cada 5 min
-setInterval(loadBtc,1800000);      // re-sincroniza el historico de velas cada 30 min
+const BTCCFG={id:"b_",status:"status.json",eq:"equity_history.csv",tr:"paper_trades.csv",eqsvg:"b_eq",eqnote:"b_eqnote",trdiv:"b_trades",tile:"t_btc",tileb:"t_btc_b"};
+const QQQCFG={id:"q_",status:"qqq_status.json",eq:"qqq_equity_history.csv",tr:"qqq_trades.csv",eqsvg:"q_eq",eqnote:"q_eqnote",trdiv:"q_trades",tile:"t_qqq",tileb:"t_qqq_b"};
+
+function refreshAll(){
+  freshest=0;
+  Promise.all([renderStatus(BTCCFG),renderStatus(QQQCFG)]).then(()=>{
+    $("fresh").textContent=freshest?("Última actualización "+ago(new Date(freshest).toISOString().replace("T"," ").replace("Z"," UTC"))):"esperando datos…";
+  });
+  loadQqq();
+}
+function manual(){$("fresh").textContent="actualizando…";refreshAll();loadBtc();}
+
+refreshAll();loadBtc();
+setInterval(refreshAll,300000);
+setInterval(loadBtc,1800000);
 </script>
 </body>
 </html>
