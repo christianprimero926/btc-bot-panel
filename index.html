@@ -26,7 +26,7 @@
   .metric{background:#0f141b;border:1px solid var(--border);border-radius:10px;padding:12px}
   .metric .k{color:var(--dim);font-size:12px;margin-bottom:4px}
   .metric .v{font-size:18px;font-weight:700}
-  .lbl{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+  .lbl{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
   table{width:100%;border-collapse:collapse;font-size:13px}
   th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border)}
   th{color:var(--dim);font-weight:600}
@@ -40,11 +40,14 @@
   .dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--green);margin-right:6px;vertical-align:middle}
   .tf{background:#21262d;color:var(--dim);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:12px;cursor:pointer;margin-left:4px}
   .tf.on{background:var(--accent);color:#0d1117;border-color:var(--accent);font-weight:700}
+  #live{font-size:11px;font-weight:700;letter-spacing:.3px}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .livepulse{animation:pulse 1.4s ease-in-out infinite}
 </style>
 </head>
 <body>
   <h1>🤖 Bot BTC Trend-Following <span style="font-weight:400;color:var(--dim)">(paper)</span></h1>
-  <div class="sub"><span class="dot"></span><span id="freshness">cargando…</span> · <button class="reload" onclick="load(true)">↻ Actualizar</button></div>
+  <div class="sub"><span class="dot"></span><span id="freshness">cargando…</span> · <button class="reload" onclick="manual()">↻ Actualizar</button></div>
 
   <div class="card">
     <div class="status">
@@ -68,11 +71,12 @@
 
   <div class="card">
     <div class="lbl">
-      <span>BTC/USDT — velas</span>
+      <span>BTC/USDT — velas <span id="live"></span></span>
       <span>
         <button class="tf" data-i="1d" data-l="120" onclick="setTf(this)">1D</button>
         <button class="tf on" data-i="4h" data-l="120" onclick="setTf(this)">4H</button>
         <button class="tf" data-i="1h" data-l="120" onclick="setTf(this)">1H</button>
+        <button class="tf" data-i="15m" data-l="120" onclick="setTf(this)">15m</button>
       </span>
     </div>
     <svg id="btcchart" viewBox="0 0 800 300" preserveAspectRatio="none"></svg>
@@ -90,13 +94,14 @@
     <div id="trades"><span class="muted">…</span></div>
   </div>
 
-  <div class="foot">Se revisa solo cada 4 h en GitHub Actions · panel actualizado por el bot</div>
+  <div class="foot">El bot decide con la vela diaria · revisa cada 4 h en GitHub Actions</div>
 
 <script>
 const $=id=>document.getElementById(id);
 const money=n=>"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const KHOSTS=["https://data-api.binance.vision","https://api.binance.com"];
-let TF={i:"4h",l:120};
+const WSHOSTS=["wss://data-stream.binance.vision/ws/","wss://stream.binance.com:9443/ws/"];
+const BTC={i:"4h",l:120,klines:[],ws:null,gen:0};
 
 async function fetchText(f){const r=await fetch(f+"?t="+Date.now());if(!r.ok)throw new Error(f+" "+r.status);return r.text();}
 async function klines(sym,interval,limit){
@@ -105,42 +110,69 @@ async function klines(sym,interval,limit){
 }
 function parseCSV(t){const l=t.trim().split(/\r?\n/);const h=l[0].split(",");return l.slice(1).map(r=>{const c=r.split(",");const o={};h.forEach((k,i)=>o[k]=c[i]);return o;});}
 function ago(utc){const d=new Date(utc.replace(" UTC","Z").replace(" ","T"));const m=Math.round((Date.now()-d)/60000);if(m<1)return"hace segundos";if(m<60)return`hace ${m} min`;const h=Math.round(m/60);if(h<24)return`hace ${h} h`;return`hace ${Math.round(h/24)} d`;}
+function setLive(on){const el=$("live");el.textContent=on?"● EN VIVO":"◌ diferido";el.style.color=on?"#2ea043":"#8b949e";el.className=on?"livepulse":"";}
 
-function setTf(btn){document.querySelectorAll(".tf").forEach(b=>b.classList.remove("on"));btn.classList.add("on");TF={i:btn.dataset.i,l:+btn.dataset.l};drawBtc();}
+// ---------- Gráfico de velas BTC (histórico REST + tiempo real WebSocket) ----------
+function setTf(btn){document.querySelectorAll(".tf").forEach(b=>b.classList.remove("on"));btn.classList.add("on");BTC.i=btn.dataset.i;BTC.l=+btn.dataset.l;loadBtc();}
 
-async function drawBtc(){
-  const el=$("btcchart");
+async function loadBtc(){
   try{
-    // pedimos extra para calcular SMA100 en el tramo visible
-    const kl=await klines("BTCUSDT",TF.i,Math.min(1000,TF.l+100));
-    const closes=kl.map(k=>+k[4]);
-    const smaAt=i=>{if(i<99)return null;let s=0;for(let j=i-99;j<=i;j++)s+=closes[j];return s/100;};
-    const N=kl.length, start=Math.max(0,N-TF.l);
-    const view=[];for(let i=start;i<N;i++)view.push({o:+kl[i][1],h:+kl[i][2],l:+kl[i][3],c:+kl[i][4],sma:smaAt(i)});
-    let lo=Infinity,hi=-Infinity;view.forEach(d=>{lo=Math.min(lo,d.l);hi=Math.max(hi,d.h);if(d.sma!=null){lo=Math.min(lo,d.sma);hi=Math.max(hi,d.sma);}});
-    const W=800,H=300,pT=10,pB=8,pL=6,pR=58,rng=(hi-lo)||1;
-    const slot=(W-pL-pR)/view.length, cw=Math.max(1.5,slot*0.7);
-    const cx=i=>pL+i*slot+slot/2, y=v=>pT+(hi-v)/rng*(H-pT-pB);
-    let s="";
-    // linea SMA100
-    let pts=[];view.forEach((d,i)=>{if(d.sma!=null)pts.push(cx(i)+","+y(d.sma));});
-    if(pts.length>1)s+=`<polyline points="${pts.join(" ")}" fill="none" stroke="#d29922" stroke-width="1.5"/>`;
-    // velas
-    view.forEach((d,i)=>{const up=d.c>=d.o,col=up?"#2ea043":"#da3633",X=cx(i);
-      s+=`<line x1="${X}" y1="${y(d.h)}" x2="${X}" y2="${y(d.l)}" stroke="${col}" stroke-width="1"/>`;
-      const yo=y(d.o),yc=y(d.c);s+=`<rect x="${X-cw/2}" y="${Math.min(yo,yc)}" width="${cw}" height="${Math.max(1,Math.abs(yo-yc))}" fill="${col}"/>`;});
-    // etiquetas de precio (max, min, ultimo)
-    const last=view[view.length-1].c;
-    [[hi,"#8b949e"],[lo,"#8b949e"],[last,"#e6edf3"]].forEach(([v,c])=>{
-      s+=`<line x1="${pL}" y1="${y(v)}" x2="${W-pR}" y2="${y(v)}" stroke="#21262d" stroke-width="1"/>`;
-      s+=`<text x="${W-pR+4}" y="${y(v)+4}" fill="${c}" font-size="12">$${Math.round(v).toLocaleString()}</text>`;});
-    el.innerHTML=s;
-    $("btcnote").innerHTML='🟠 Línea naranja = media de 100 días. El bot <b>compra</b> cuando el precio cierra por <b>encima</b> de la línea, y pasa a <b>CASH</b> cuando cae por debajo.';
-  }catch(e){el.innerHTML="";$("btcnote").textContent="No se pudo cargar el gráfico de BTC desde esta red.";}
+    const raw=await klines("BTCUSDT",BTC.i,Math.min(1000,BTC.l+100));
+    BTC.klines=raw.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4]}));
+    renderBtc();
+    connectWs();
+  }catch(e){$("btcchart").innerHTML="";$("btcnote").textContent="No se pudo cargar el gráfico de BTC desde esta red.";setLive(false);}
+}
+function renderBtc(){
+  const arr=BTC.klines;if(arr.length<2)return;
+  const closes=arr.map(k=>k.c);
+  const smaAt=i=>{if(i<99)return null;let s=0;for(let j=i-99;j<=i;j++)s+=closes[j];return s/100;};
+  const N=arr.length,start=Math.max(0,N-BTC.l);
+  const view=[];for(let i=start;i<N;i++)view.push({...arr[i],sma:smaAt(i)});
+  let lo=Infinity,hi=-Infinity;view.forEach(d=>{lo=Math.min(lo,d.l);hi=Math.max(hi,d.h);if(d.sma!=null){lo=Math.min(lo,d.sma);hi=Math.max(hi,d.sma);}});
+  const W=800,H=300,pT=10,pB=8,pL=6,pR=62,rng=(hi-lo)||1;
+  const slot=(W-pL-pR)/view.length,cw=Math.max(1.5,slot*0.7);
+  const cx=i=>pL+i*slot+slot/2,y=v=>pT+(hi-v)/rng*(H-pT-pB);
+  let s="";
+  let pts=[];view.forEach((d,i)=>{if(d.sma!=null)pts.push(cx(i)+","+y(d.sma));});
+  if(pts.length>1)s+=`<polyline points="${pts.join(" ")}" fill="none" stroke="#d29922" stroke-width="1.5"/>`;
+  view.forEach((d,i)=>{const up=d.c>=d.o,col=up?"#2ea043":"#da3633",X=cx(i);
+    s+=`<line x1="${X}" y1="${y(d.h)}" x2="${X}" y2="${y(d.l)}" stroke="${col}" stroke-width="1"/>`;
+    const yo=y(d.o),yc=y(d.c);s+=`<rect x="${X-cw/2}" y="${Math.min(yo,yc)}" width="${cw}" height="${Math.max(1,Math.abs(yo-yc))}" fill="${col}"/>`;});
+  const last=view[view.length-1].c;
+  [[hi,"#8b949e"],[lo,"#8b949e"]].forEach(([v,c])=>{
+    s+=`<line x1="${pL}" y1="${y(v)}" x2="${W-pR}" y2="${y(v)}" stroke="#21262d" stroke-width="1"/>`;
+    s+=`<text x="${W-pR+4}" y="${y(v)+4}" fill="${c}" font-size="12">$${Math.round(v).toLocaleString()}</text>`;});
+  const lcol=last>=view[view.length-1].o?"#2ea043":"#da3633";
+  s+=`<line x1="${pL}" y1="${y(last)}" x2="${W-pR}" y2="${y(last)}" stroke="${lcol}" stroke-dasharray="3 3" stroke-width="1"/>`;
+  s+=`<rect x="${W-pR}" y="${y(last)-9}" width="${pR}" height="18" fill="${lcol}"/><text x="${W-pR+4}" y="${y(last)+4}" fill="#fff" font-size="12" font-weight="700">$${Math.round(last).toLocaleString()}</text>`;
+  $("btcchart").innerHTML=s;
+  $("btcnote").innerHTML='🟠 Línea naranja = media de 100 días. El bot <b>compra</b> cuando el precio cierra por <b>encima</b>, y pasa a <b>CASH</b> cuando cae por debajo.';
+}
+function connectWs(){
+  const gen=++BTC.gen;
+  if(BTC.ws){try{BTC.ws.close()}catch(e){}BTC.ws=null;}
+  let hi=0;
+  (function open(){
+    if(gen!==BTC.gen)return;
+    let ws;try{ws=new WebSocket(WSHOSTS[hi]+"btcusdt@kline_"+BTC.i);}catch(e){setLive(false);return;}
+    BTC.ws=ws;
+    ws.onopen=()=>{if(gen===BTC.gen)setLive(true);};
+    ws.onmessage=ev=>{if(gen!==BTC.gen)return;try{
+      const k=JSON.parse(ev.data).k;if(!k)return;
+      const c={t:+k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c};
+      const arr=BTC.klines,last=arr[arr.length-1];
+      if(last&&last.t===c.t)arr[arr.length-1]=c;
+      else{arr.push(c);while(arr.length>BTC.l+140)arr.shift();}
+      renderBtc();
+    }catch(e){}};
+    ws.onclose=()=>{if(gen!==BTC.gen)return;setLive(false);hi=(hi+1)%WSHOSTS.length;setTimeout(open,3000);};
+    ws.onerror=()=>{try{ws.close()}catch(e){}};
+  })();
 }
 
-async function load(manual){
-  if(manual){$("freshness").textContent="actualizando…";}
+// ---------- Estado del bot (status/equity/operaciones) ----------
+async function refreshData(){
   try{
     const s=JSON.parse(await fetchText("status.json"));
     $("freshness").textContent="Última revisión "+ago(s.updated_utc);
@@ -169,7 +201,6 @@ async function load(manual){
       h+=`<tr><td>${t.fecha_utc.replace(" UTC","")}</td><td>${t.accion}</td><td>${money(t.precio)}</td><td class="${cl}">${pnl}</td></tr>`;});
     $("trades").innerHTML=h+"</table>";
   }catch(e){$("trades").innerHTML='<span class="muted">Sin operaciones todavía. El bot está esperando que BTC supere su media de 100 días para comprar.</span>';}
-  drawBtc();
 }
 function drawEquity(v){
   const svg=$("chart");svg.innerHTML="";
@@ -182,8 +213,12 @@ function drawEquity(v){
   svg.innerHTML+=`<polyline points="${v.map((n,i)=>x(i)+","+y(n)).join(" ")}" fill="none" stroke="${col}" stroke-width="2"/>`;
   svg.innerHTML+=`<circle cx="${x(v.length-1)}" cy="${y(last)}" r="3.5" fill="${col}"/>`;
 }
-load();
-setInterval(()=>load(false),300000);
+function manual(){$("freshness").textContent="actualizando…";refreshData();loadBtc();}
+
+refreshData();
+loadBtc();
+setInterval(refreshData,300000);   // estado del bot cada 5 min
+setInterval(loadBtc,1800000);      // re-sincroniza el historico de velas cada 30 min
 </script>
 </body>
 </html>
