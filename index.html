@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0e14; --bg2:#0d131c; --card:rgba(22,28,38,.72); --cardline:rgba(255,255,255,.06);
+  --bg:#0a0e14; --card:rgba(22,28,38,.72); --cardline:rgba(255,255,255,.06);
   --txt:#e8edf4; --dim:#94a0b0; --dimmer:#79879a;
   --green:#22c55e; --red:#ef4444; --amber:#f59e0b; --accent:#06b6d4; --violet:#7c3aed;
   --grad:linear-gradient(135deg,#7c3aed 0%,#06b6d4 100%);
@@ -26,7 +26,6 @@ body{
   min-height:100vh; padding:18px 16px 40px;
 }
 .wrap{max-width:1180px;margin:0 auto}
-/* ---------- topbar ---------- */
 .topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
 .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.3px}
 .logo .ic{width:38px;height:38px;border-radius:12px;background:var(--grad);display:grid;place-items:center;font-size:19px;box-shadow:0 4px 16px rgba(124,58,237,.4)}
@@ -37,57 +36,39 @@ body{
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(34,197,94,.5)}50%{opacity:.55;box-shadow:0 0 0 6px rgba(34,197,94,0)}}
 .btn{background:rgba(255,255,255,.07);color:var(--txt);border:1px solid var(--cardline);border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;transition:.18s;font-family:inherit}
 .btn:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
-.btn:active{transform:translateY(0)}
 .btn.spin .ric{display:inline-block;animation:rot 1s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
-/* ---------- hero ---------- */
-.hero{
-  background:linear-gradient(135deg,rgba(124,58,237,.16),rgba(6,182,212,.10)),var(--card);
-  border:1px solid var(--cardline);border-radius:var(--radius);box-shadow:var(--shadow);
-  padding:20px 22px;margin-bottom:16px;display:flex;align-items:center;gap:26px;flex-wrap:wrap;
-  backdrop-filter:blur(12px);animation:fadeUp .5s ease both;
-}
-.hero .big{font-size:38px;font-weight:800;letter-spacing:-1px;line-height:1.05}
-.hero .cap{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px}
-.hero .delta{font-size:15px;font-weight:700;margin-top:4px}
+.hero{background:linear-gradient(135deg,rgba(124,58,237,.16),rgba(6,182,212,.10)),var(--card);border:1px solid var(--cardline);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;backdrop-filter:blur(12px);animation:fadeUp .5s ease both}
+.hero .big{font-size:36px;font-weight:800;letter-spacing:-1px;line-height:1.05}
+.hero .cap{color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px}
+.hero .delta{font-size:14px;font-weight:700;margin-top:4px}
+.htiles{display:flex;gap:22px;flex-wrap:wrap}
 .hstat{padding-left:22px;border-left:1px solid var(--cardline)}
-.hstat .v{font-size:20px;font-weight:800}
+.hstat .v{font-size:19px;font-weight:800}
 .pos{color:var(--green)}.neg{color:var(--red)}.flat{color:var(--dim)}
-/* ---------- layout ---------- */
 .layout{display:grid;grid-template-columns:290px 1fr;gap:16px;align-items:start}
-@media(max-width:860px){
-  .layout{grid-template-columns:1fr}
-  .aside{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .about{grid-column:1/-1}
-  .hero{gap:16px}.hero .big{font-size:30px}.hstat{padding-left:16px}
-}
-@media(max-width:520px){.aside{grid-template-columns:1fr}}
-/* ---------- bot cards (columna interactiva) ---------- */
+@media(max-width:860px){.layout{grid-template-columns:1fr}.aside{display:grid;grid-template-columns:1fr 1fr;gap:12px}.about{grid-column:1/-1}.hero{gap:16px}.hero .big{font-size:29px}.htiles{gap:16px}.hstat{padding-left:14px}}
+@media(max-width:560px){.aside{grid-template-columns:1fr}}
 .aside{display:flex;flex-direction:column;gap:12px}
 @media(max-width:860px){.aside{display:grid}}
-.botcard{
-  background:var(--card);border:1px solid var(--cardline);border-radius:var(--radius);
-  padding:16px;cursor:pointer;transition:.2s;position:relative;overflow:hidden;
-  box-shadow:var(--shadow);backdrop-filter:blur(12px);animation:fadeUp .5s ease both;
-}
+.botcard{background:var(--card);border:1px solid var(--cardline);border-radius:var(--radius);padding:16px;cursor:pointer;transition:.2s;position:relative;overflow:hidden;box-shadow:var(--shadow);backdrop-filter:blur(12px);animation:fadeUp .5s ease both}
 .botcard:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.14)}
+.botcard:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .botcard.on{border-color:transparent}
-.botcard.on::before{content:"";position:absolute;inset:0;border-radius:var(--radius);padding:1.5px;background:var(--grad);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.botcard.on::before{content:"";position:absolute;inset:0;border-radius:var(--radius);padding:1.5px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 .botcard .top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .botcard .bic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:17px;background:rgba(255,255,255,.07)}
 .botcard .nm{font-weight:700;font-size:14px}
 .botcard .sy{color:var(--dim);font-size:12px}
-.botcard .eq{font-size:24px;font-weight:800;letter-spacing:-.5px}
-.botcard .rt{font-size:13px;font-weight:700;margin-top:2px}
-.botcard .spark{margin-top:10px;height:38px}
+.botcard .eq{font-size:23px;font-weight:800;letter-spacing:-.5px}
+.botcard .rt{font-size:12.5px;font-weight:700;margin-top:2px}
+.botcard .spark{margin-top:10px;height:36px;width:100%;display:block}
 .badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.3px;margin-left:auto;white-space:nowrap}
 .badge.long{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.35)}
 .badge.cash{background:rgba(255,255,255,.06);color:var(--dim);border:1px solid var(--cardline)}
 .about{background:var(--card);border:1px solid var(--cardline);border-radius:var(--radius);padding:16px;color:var(--dim);font-size:12.5px;line-height:1.55;backdrop-filter:blur(12px)}
 .about b{color:var(--txt)}
 .about .t{font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:700;color:var(--dimmer);margin-bottom:8px}
-/* ---------- main ---------- */
 .main{display:flex;flex-direction:column;gap:16px;min-width:0}
 .card{background:var(--card);border:1px solid var(--cardline);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);backdrop-filter:blur(12px);animation:fadeUp .5s ease both}
 .cardhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
@@ -100,44 +81,35 @@ body{
 .tf{background:rgba(255,255,255,.06);color:var(--dim);border:1px solid var(--cardline);border-radius:8px;padding:7px 13px;min-height:32px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit}
 .tf:hover{color:var(--txt)}
 .tf.on{background:var(--grad);color:#fff;border-color:transparent;font-weight:800}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:2px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
 .kpi{background:rgba(10,14,20,.55);border:1px solid var(--cardline);border-radius:12px;padding:12px 14px}
 .kpi .k{color:var(--dim);font-size:11.5px;font-weight:600;margin-bottom:4px}
 .kpi .v{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.kpi .sub{font-size:12px;font-weight:700;margin-top:2px}
 .reason{color:var(--dim);font-size:13px;margin-top:12px;line-height:1.5}
-/* ---------- charts ---------- */
 .chartwrap{position:relative}
 .chartwrap svg{width:100%;display:block;touch-action:pan-y}
-#candles{height:320px}
-#eqchart{height:170px}
-.tooltip{
-  position:absolute;pointer-events:none;background:rgba(13,19,28,.95);border:1px solid rgba(255,255,255,.12);
-  border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.55;z-index:5;display:none;min-width:150px;
-  box-shadow:0 8px 24px rgba(0,0,0,.5);backdrop-filter:blur(8px);
-}
+#candles{height:320px}#eqchart{height:170px}
+.tooltip{position:absolute;pointer-events:none;background:rgba(13,19,28,.95);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.55;z-index:5;display:none;min-width:150px;box-shadow:0 8px 24px rgba(0,0,0,.5);backdrop-filter:blur(8px)}
 .tooltip .d{color:var(--dim);font-size:11px;margin-bottom:3px}
-.tooltip b{font-weight:700}
 .cnote{color:var(--dim);font-size:12.5px;margin-top:10px;line-height:1.5}
-/* ---------- table ---------- */
 table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--cardline)}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--cardline);white-space:nowrap}
 th{color:var(--dimmer);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.6px}
 tr:last-child td{border-bottom:none}
+#trades{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .chip{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px}
 .chip.buy{background:rgba(34,197,94,.15);color:var(--green)}
 .chip.sell{background:rgba(239,68,68,.15);color:var(--red)}
 .empty{color:var(--dim);font-size:13px;padding:6px 0}
-#trades{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .foot{color:var(--dimmer);font-size:12px;text-align:center;margin-top:22px;line-height:1.6}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-/* skeleton */
 .skel{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:sh 1.4s infinite;border-radius:8px;color:transparent!important}
 @keyframes sh{to{background-position:-200% 0}}
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <div class="topbar">
     <div class="logo"><span class="ic">🤖</span> TrendBots <small>paper</small></div>
     <div class="spacer"></div>
@@ -147,36 +119,22 @@ tr:last-child td{border-bottom:none}
 
   <div class="hero">
     <div>
-      <div class="cap">Portafolio total (2 bots)</div>
+      <div class="cap" id="h_cap">Portafolio total</div>
       <div class="big" id="h_total">—</div>
       <div class="delta flat" id="h_delta">—</div>
     </div>
-    <div class="hstat"><div class="cap">₿ Bitcoin</div><div class="v" id="h_btc">—</div><div class="delta flat" id="h_btc_d" style="font-size:13px">—</div></div>
-    <div class="hstat"><div class="cap">📈 QQQ</div><div class="v" id="h_qqq">—</div><div class="delta flat" id="h_qqq_d" style="font-size:13px">—</div></div>
+    <div class="htiles" id="htiles"></div>
   </div>
 
   <div class="layout">
-    <!-- columna interactiva -->
-    <div class="aside" id="aside">
-      <div class="botcard" id="card_btc" role="button" tabindex="0" aria-label="Ver detalle de Bitcoin" onclick="selectBot('btc')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectBot('btc')}">
-        <div class="top"><span class="bic">₿</span><div><div class="nm">Bitcoin</div><div class="sy">BTC/USDT · SMA100</div></div><span class="badge cash" id="cb_btc">…</span></div>
-        <div class="eq skel" id="ce_btc">$0,000.00</div>
-        <div class="rt flat" id="cr_btc">—</div>
-        <svg class="spark" id="sp_btc" viewBox="0 0 240 38" preserveAspectRatio="none"></svg>
-      </div>
-      <div class="botcard" id="card_qqq" role="button" tabindex="0" aria-label="Ver detalle de QQQ" onclick="selectBot('qqq')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectBot('qqq')}">
-        <div class="top"><span class="bic">📈</span><div><div class="nm">QQQ · Nasdaq-100</div><div class="sy">ETF · SMA150</div></div><span class="badge cash" id="cb_qqq">…</span></div>
-        <div class="eq skel" id="ce_qqq">$0,000.00</div>
-        <div class="rt flat" id="cr_qqq">—</div>
-        <svg class="spark" id="sp_qqq" viewBox="0 0 240 38" preserveAspectRatio="none"></svg>
-      </div>
+    <div class="aside">
+      <div id="cards"></div>
       <div class="about">
         <div class="t">La estrategia</div>
         Cada bot está <b>dentro</b> mientras el precio cierre por <b>encima de su media móvil</b> (línea naranja) y pasa a <b>cash</b> cuando cae por debajo. Sin apalancamiento, sin martingala. Decide con la <b>vela diaria</b> — la paciencia es la estrategia.
       </div>
     </div>
 
-    <!-- panel principal -->
     <div class="main">
       <div class="card">
         <div class="cardhead">
@@ -189,6 +147,7 @@ tr:last-child td{border-bottom:none}
           <div class="kpi"><div class="k" id="d_smak">Media</div><div class="v" id="d_sma">—</div></div>
           <div class="kpi"><div class="k">Distancia a la media</div><div class="v" id="d_gap">—</div></div>
           <div class="kpi"><div class="k">Equity</div><div class="v" id="d_eq">—</div></div>
+          <div class="kpi"><div class="k">Ganancia neta</div><div class="v" id="d_net">—</div><div class="sub" id="d_netpct">—</div></div>
         </div>
         <div class="reason" id="d_reason">—</div>
       </div>
@@ -224,39 +183,62 @@ tr:last-child td{border-bottom:none}
 
   <div class="foot">
     Bots de trend-following en modo paper · deciden con la vela diaria · corren solos en GitHub Actions cada 2 h<br>
-    El gráfico de BTC late en vivo (WebSocket) · QQQ usa velas diarias del último cierre
+    BTC late en vivo (WebSocket) · QQQ y Oro usan velas diarias del último cierre · <b>Oro/forex: demo</b> — el forex puro (EURUSD) no tiene ventaja; el oro sí (leve)
   </div>
 </div>
 
 <script>
 "use strict";
-/* ================= config ================= */
+/* ================= configuración de bots ================= */
 const BOTS={
-  btc:{icon:"₿",name:"Bitcoin",sym:"BTC/USDT",quote:"USDT",smaN:100,
-       files:{status:"status.json",eq:"equity_history.csv",tr:"paper_trades.csv"},
-       candles:{type:"binance",symbol:"BTCUSDT",tfs:["1d","4h","1h","15m"],def:"4h"}},
-  qqq:{icon:"📈",name:"QQQ · Nasdaq-100",sym:"QQQ",quote:"USD",smaN:150,
-       files:{status:"qqq_status.json",eq:"qqq_equity_history.csv",tr:"qqq_trades.csv"},
-       candles:{type:"csv",file:"qqq_candles.csv",tfs:["1d"],def:"1d"}},
+  btc:{icon:"₿",name:"Bitcoin",sym:"BTC/USDT",short:"₿ BTC",smaN:100,
+    files:{status:"status.json",eq:"equity_history.csv",tr:"paper_trades.csv"},
+    candles:{type:"binance",symbol:"BTCUSDT",tfs:["1d","4h","1h","15m"],def:"4h"}},
+  qqq:{icon:"📈",name:"QQQ · Nasdaq-100",sym:"QQQ ETF",short:"📈 QQQ",smaN:150,
+    files:{status:"qqq_status.json",eq:"qqq_equity_history.csv",tr:"qqq_trades.csv"},
+    candles:{type:"csv",file:"qqq_candles.csv",tfs:["1d"],def:"1d"}},
+  gold:{icon:"🥇",name:"Oro · XAUUSD",sym:"Gold (demo)",short:"🥇 Oro",smaN:100,
+    files:{status:"gold_status.json",eq:"gold_equity_history.csv",tr:"gold_trades.csv"},
+    candles:{type:"csv",file:"gold_candles.csv",tfs:["1d"],def:"1d"}},
 };
+const KEYS=Object.keys(BOTS);
 const KHOSTS=["https://data-api.binance.vision","https://api.binance.com"];
 const WSHOSTS=["wss://data-stream.binance.vision/ws/","wss://stream.binance.com:9443/ws/"];
-const S={sel:"btc",data:{btc:{},qqq:{}},tf:"4h",kl:[],ws:null,gen:0,freshest:0,wsLive:false,busy:false};
+const S={sel:"btc",data:{},tf:"4h",kl:[],ws:null,gen:0,freshest:0,wsLive:false,busy:false};
+KEYS.forEach(k=>S.data[k]={});
 const $=id=>document.getElementById(id);
 const money=n=>{const x=Number(n);return Number.isFinite(x)?"$"+x.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"—";};
+const signMoney=n=>{const x=Number(n);if(!Number.isFinite(x))return"—";return(x>=0?"+":"−")+"$"+Math.abs(x).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});};
 const pctf=n=>Number.isFinite(n)?(n>=0?"+":"")+n.toFixed(2)+"%":"—";
 const cls=n=>n>0.001?"pos":n<-0.001?"neg":"flat";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const netUsd=s=>s&&Number.isFinite(s.equity)&&Number.isFinite(s.start_capital)?s.equity-s.start_capital:NaN;
+
+/* ================= construir UI dinámica ================= */
+function buildUI(){
+  $("htiles").innerHTML=KEYS.map(k=>
+    `<div class="hstat"><div class="cap">${BOTS[k].short}</div><div class="v" id="h_${k}">—</div><div class="delta flat" id="h_${k}_d">—</div></div>`).join("");
+  $("cards").innerHTML=KEYS.map(k=>{const B=BOTS[k];return(
+    `<div class="botcard" id="card_${k}" role="button" tabindex="0" aria-label="Ver ${B.name}"
+        onclick="selectBot('${k}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectBot('${k}')}">
+      <div class="top"><span class="bic">${B.icon}</span>
+        <div><div class="nm">${B.name}</div><div class="sy">${B.sym} · SMA${B.smaN}</div></div>
+        <span class="badge cash" id="cb_${k}">…</span></div>
+      <div class="eq skel" id="ce_${k}">$0,000.00</div>
+      <div class="rt flat" id="cr_${k}">—</div>
+      <svg class="spark" id="sp_${k}" viewBox="0 0 240 36" preserveAspectRatio="none"></svg>
+    </div>`);}).join("");
+}
 
 /* ================= data ================= */
 async function fetchText(f){const r=await fetch(f+"?t="+Date.now());if(!r.ok)throw 0;return r.text();}
 function parseCSV(t){const L=t.trim().split(/\r?\n/);if(L.length<2)return[];const H=L[0].split(",");
   return L.slice(1).map(r=>{const c=r.split(",");const o={};H.forEach((k,i)=>o[k]=c[i]);return o;});}
 function ago(utc){const d=new Date(utc.replace(" UTC","Z").replace(" ","T"));const t=d.getTime();
-  if(t>S.freshest)S.freshest=t;const m=Math.round((Date.now()-t)/60000);
-  if(m<1)return"hace segundos";if(m<60)return`hace ${m} min`;const h=Math.round(m/60);
+  if(Number.isFinite(t)&&t>S.freshest)S.freshest=t;const m=Math.round((Date.now()-t)/60000);
+  if(!Number.isFinite(m))return"";if(m<1)return"hace segundos";if(m<60)return`hace ${m} min`;const h=Math.round(m/60);
   return h<24?`hace ${h} h`:`hace ${Math.round(h/24)} d`;}
-function maxDD(v){let pk=v[0],dd=0;for(const x of v){pk=Math.max(pk,x);dd=Math.max(dd,(pk-x)/pk*100);}return dd;}
+function maxDD(v){let pk=v[0],dd=0;for(const x of v){pk=Math.max(pk,x);if(pk>0)dd=Math.max(dd,(pk-x)/pk*100);}return dd;}
 
 async function loadBot(key){
   const B=BOTS[key],D=S.data[key];
@@ -277,42 +259,38 @@ function renderCard(key){
   const D=S.data[key],s=D.status;
   const eqEl=$("ce_"+key);eqEl.classList.remove("skel");
   if(!s){eqEl.textContent="—";$("cr_"+key).textContent="esperando primera ronda…";$("cb_"+key).textContent="…";return;}
-  const ret=s._ret;
+  const ret=s._ret,net=netUsd(s);
   eqEl.textContent=money(s.equity);
-  const r=$("cr_"+key);r.textContent=pctf(ret)+" desde el inicio";r.className="rt "+cls(ret||0);
+  const r=$("cr_"+key);r.textContent=pctf(ret)+"  ·  "+signMoney(net);r.className="rt "+cls(net||0);
   const b=$("cb_"+key);const long=s.position==="LONG";
   b.className="badge "+(long?"long":"cash");b.textContent=long?"● LONG":"○ CASH";
   drawSpark("sp_"+key,D.eq.map(x=>x.v));
 }
 function drawSpark(id,v){const svg=$(id);svg.innerHTML="";if(v.length<2)return;
-  const W=240,H=38,mn=Math.min(...v),mx=Math.max(...v),rg=(mx-mn)||1;
+  const W=240,H=36,mn=Math.min(...v),mx=Math.max(...v),rg=(mx-mn)||1;
   const x=i=>i*W/(v.length-1),y=n=>H-3-(n-mn)/rg*(H-6);
   const up=v[v.length-1]>=v[0],c=up?"#22c55e":"#ef4444";
-  const pts=v.map((n,i)=>x(i)+","+y(n)).join(" ");
-  svg.innerHTML=`<polyline points="${pts}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round"/>`;}
+  svg.innerHTML=`<polyline points="${v.map((n,i)=>x(i)+","+y(n)).join(" ")}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round"/>`;}
 function renderHero(){
-  const sb=S.data.btc.status,sq=S.data.qqq.status;
-  let tot=0,base=0;
-  if(sb&&Number.isFinite(sb.equity)){tot+=sb.equity;base+=sb.start_capital;}
-  if(sq&&Number.isFinite(sq.equity)){tot+=sq.equity;base+=sq.start_capital;}
-  if(base>0){const d=(tot/base-1)*100;
-    $("h_total").textContent=money(tot);
-    const e=$("h_delta");e.textContent=pctf(d)+" total";e.className="delta "+cls(d);
-  }
-  for(const[k,s]of[["btc",sb],["qqq",sq]]){
+  let tot=0,base=0,cnt=0;
+  KEYS.forEach(k=>{const s=S.data[k].status;if(s&&Number.isFinite(s.equity)&&s.start_capital>0){tot+=s.equity;base+=s.start_capital;cnt++;}
     $("h_"+k).textContent=s?money(s.equity):"—";
     const el=$("h_"+k+"_d");
-    if(s){const d=s._ret;el.textContent=(s.position==="LONG"?"● dentro · ":"○ cash · ")+pctf(d);el.className="delta "+cls(d||0);}
-    else{el.textContent="esperando…";el.className="delta flat";}
-  }
+    if(s){el.textContent=(s.position==="LONG"?"● ":"○ ")+pctf(s._ret);el.className="delta "+cls(s._ret||0);}
+    else{el.textContent="esperando…";el.className="delta flat";}});
+  // Rótulo transparente: cuántos de los N bots están contados en el total.
+  $("h_cap").textContent=`Portafolio total · ${cnt} de ${KEYS.length} bots`;
+  if(cnt>0){const d=(tot/base-1)*100,net=tot-base;
+    $("h_total").textContent=money(tot);
+    const e=$("h_delta");e.textContent=pctf(d)+"  ·  "+signMoney(net)+" total";e.className="delta "+cls(net||0);}
+  else{$("h_total").textContent="—";$("h_delta").textContent="esperando datos…";$("h_delta").className="delta flat";}
 }
 
 /* ================= detalle ================= */
 function selectBot(key){
-  if(S.sel===key)return;
+  if(!BOTS[key])return;
   S.sel=key;
-  $("card_btc").classList.toggle("on",key==="btc");
-  $("card_qqq").classList.toggle("on",key==="qqq");
+  KEYS.forEach(k=>$("card_"+k).classList.toggle("on",k===key));
   S.tf=BOTS[key].candles.def;
   renderDetail();loadCandles();
 }
@@ -330,17 +308,20 @@ function renderDetail(){
     g.textContent=Number.isFinite(gap)?pctf(gap)+(gap>=0?" ↑ dentro":" ↓ cash"):"—";
     g.className="v "+(Number.isFinite(gap)?cls(gap):"flat");
     $("d_eq").textContent=money(s.equity);
+    const net=netUsd(s),ne=$("d_net");
+    ne.textContent=signMoney(net);ne.className="v "+cls(net||0);
+    const np=$("d_netpct");np.textContent=pctf(s._ret)+" desde el inicio";np.className="sub "+cls(s._ret||0);
     $("d_reason").textContent=s.reason;
   }else{
-    ["d_price","d_sma","d_gap","d_eq"].forEach(i=>$(i).textContent="—");
+    ["d_price","d_sma","d_gap","d_eq","d_net","d_netpct"].forEach(i=>$(i).textContent="—");
     $("d_badge").textContent="…";$("d_reason").textContent="Este bot aún no publica datos — espera su primera ronda en GitHub Actions.";
   }
   renderEquity();renderTrades();
 }
 function renderEquity(){
-  const D=S.data[S.sel],v=D.eq;
-  const svg=$("eqchart");svg.innerHTML="";$("e_tip").style.display="none";
-  if(!v||v.length<2){$("e_note").textContent="La curva se dibuja con ≥2 días de historial.";$("e_dd").textContent="";EQGEO=null;return;}
+  const v=S.data[S.sel].eq;
+  const svg=$("eqchart");svg.innerHTML="";$("e_tip").style.display="none";EQGEO=null;
+  if(!v||v.length<2){$("e_note").textContent="La curva se dibuja con ≥2 días de historial.";$("e_dd").textContent="";return;}
   $("e_note").textContent="";
   $("e_dd").textContent="drawdown máx "+maxDD(v.map(x=>x.v)).toFixed(1)+"%";
   const W=800,H=170,p=8,vals=v.map(x=>x.v),mn=Math.min(...vals,1000),mx=Math.max(...vals,1000),rg=(mx-mn)||1;
@@ -349,8 +330,7 @@ function renderEquity(){
   const line=vals.map((n,i)=>x(i)+","+y(n)).join(" ");
   const area=`${x(0)},${H-p} ${line} ${x(v.length-1)},${H-p}`;
   svg.innerHTML=
-    `<defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="${c}" stop-opacity=".28"/><stop offset="100%" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>
+    `<defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c}" stop-opacity=".28"/><stop offset="100%" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>
      <line x1="0" y1="${y(1000)}" x2="${W}" y2="${y(1000)}" stroke="#3a4350" stroke-dasharray="5 5"/>
      <polygon points="${area}" fill="url(#eg)"/>
      <polyline points="${line}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round"/>
@@ -374,23 +354,18 @@ function renderTrades(){
 
 /* ================= velas ================= */
 let GEO=null,EQGEO=null;
-function tfButtons(){
-  const B=BOTS[S.sel];
-  $("c_tfs").innerHTML=B.candles.tfs.map(t=>
-    `<button class="tf ${t===S.tf?"on":""}" onclick="setTf('${t}')">${t.toUpperCase()}</button>`).join("");
-}
+function tfButtons(){$("c_tfs").innerHTML=BOTS[S.sel].candles.tfs.map(t=>`<button class="tf ${t===S.tf?"on":""}" onclick="setTf('${t}')">${t.toUpperCase()}</button>`).join("");}
 function setTf(t){S.tf=t;tfButtons();loadCandles();}
 async function loadCandles(){
   tfButtons();
-  const B=BOTS[S.sel];
-  const gen=++S.gen;      // invalida cualquier carga/WS anterior ANTES de la parte async
+  const B=BOTS[S.sel],gen=++S.gen;
   closeWs();
   if(B.candles.type==="binance"){
     setLive(null);
     try{
       let raw=null;
       for(const h of KHOSTS){try{const r=await fetch(`${h}/api/v3/klines?symbol=${B.candles.symbol}&interval=${S.tf}&limit=220`);if(r.ok){raw=await r.json();break;}}catch(e){}}
-      if(gen!==S.gen)return;             // llegó tarde: otro loadCandles tomó el control
+      if(gen!==S.gen)return;
       if(!raw)throw 0;
       S.kl=raw.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4]}));
       paintCandles();openWs(gen);
@@ -402,7 +377,7 @@ async function loadCandles(){
       if(gen!==S.gen)return;
       S.kl=rows.map(r=>({d:r.date,o:+r.open,h:+r.high,l:+r.low,c:+r.close})).filter(k=>!isNaN(k.c)&&!isNaN(k.o));
       paintCandles();
-    }catch(e){if(gen!==S.gen)return;S.kl=[];paintCandles();$("c_note").textContent="Las velas aparecen tras la primera ronda del bot de QQQ.";}
+    }catch(e){if(gen!==S.gen)return;S.kl=[];paintCandles();$("c_note").textContent="Las velas aparecen tras la primera ronda de este bot.";}
   }
 }
 function setLive(on){const el=$("c_live");S.wsLive=on===true;
@@ -427,44 +402,31 @@ function paintCandles(){
   if(pts.length>1)s+=`<polyline points="${pts.join(" ")}" fill="none" stroke="#f59e0b" stroke-width="1.6" opacity=".95"/>`;
   view.forEach((d,i)=>{const up=d.c>=d.o,c=up?"#22c55e":"#ef4444",X=cx(i);
     s+=`<line x1="${X}" y1="${y(d.h)}" x2="${X}" y2="${y(d.l)}" stroke="${c}" stroke-width="1"/>`;
-    const yo=y(d.o),yc=y(d.c);
-    s+=`<rect x="${X-cw/2}" y="${Math.min(yo,yc)}" width="${cw}" height="${Math.max(1,Math.abs(yo-yc))}" fill="${c}" rx="1"/>`;});
-  [[hi],[lo]].forEach(([v])=>{s+=`<line x1="${pL}" y1="${y(v)}" x2="${W-pR}" y2="${y(v)}" stroke="rgba(255,255,255,.05)"/>
-    <text x="${W-pR+5}" y="${y(v)+4}" fill="#8b96a5" font-size="11.5">$${Math.round(v).toLocaleString()}</text>`;});
+    const yo=y(d.o),yc=y(d.c);s+=`<rect x="${X-cw/2}" y="${Math.min(yo,yc)}" width="${cw}" height="${Math.max(1,Math.abs(yo-yc))}" fill="${c}" rx="1"/>`;});
+  [[hi],[lo]].forEach(([v])=>{s+=`<line x1="${pL}" y1="${y(v)}" x2="${W-pR}" y2="${y(v)}" stroke="rgba(255,255,255,.05)"/><text x="${W-pR+5}" y="${y(v)+4}" fill="#94a0b0" font-size="11.5">$${Math.round(v).toLocaleString()}</text>`;});
   const last=view[view.length-1],lc=last.c>=last.o?"#22c55e":"#ef4444";
   s+=`<line x1="${pL}" y1="${y(last.c)}" x2="${W-pR}" y2="${y(last.c)}" stroke="${lc}" stroke-dasharray="3 4" opacity=".8"/>
       <rect x="${W-pR}" y="${y(last.c)-10}" width="${pR}" height="20" rx="4" fill="${lc}"/>
       <text x="${W-pR+5}" y="${y(last.c)+4}" fill="#fff" font-size="11.5" font-weight="800">$${Math.round(last.c).toLocaleString()}</text>`;
-  // crosshair placeholder (dibujado encima al mover el mouse)
-  s+=`<g id="xh" style="display:none">
-      <line id="xh_v" y1="${pT}" y2="${H-pB}" stroke="rgba(255,255,255,.25)" stroke-dasharray="3 3"/>
-      <line id="xh_h" x1="${pL}" x2="${W-pR}" stroke="rgba(255,255,255,.25)" stroke-dasharray="3 3"/></g>`;
+  s+=`<g id="xh" style="display:none"><line id="xh_v" y1="${pT}" y2="${H-pB}" stroke="rgba(255,255,255,.25)" stroke-dasharray="3 3"/><line id="xh_h" x1="${pL}" x2="${W-pR}" stroke="rgba(255,255,255,.25)" stroke-dasharray="3 3"/></g>`;
   svg.innerHTML=s;
-  GEO={view,cx,y,slot,pL,pR,pT,pB,W,H,hi,lo,rg};
+  GEO={view,cx,y,slot,pL,pR,pT,pB,W,H};
   $("c_note").innerHTML=`🟠 Media de ${smaN} días. El bot <b>compra</b> cuando el precio cierra por <b>encima</b> de la línea y pasa a <b>cash</b> por debajo. Pasa el dedo o el mouse por el gráfico para inspeccionar cada vela.`;
 }
-/* crosshair + tooltip */
-function fmtCandleTime(k){
-  if(k.d)return k.d;
-  const dt=new Date(k.t);
-  return dt.toLocaleDateString("es-CO",{day:"2-digit",month:"short"})+" "+dt.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});
-}
+function fmtCandleTime(k){if(k.d)return k.d;const dt=new Date(k.t);return dt.toLocaleDateString("es-CO",{day:"2-digit",month:"short"})+" "+dt.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});}
 function candleMove(ev){
   if(!GEO)return;
   const svg=$("candles"),r=svg.getBoundingClientRect();
   const px=(ev.clientX-r.left)*GEO.W/r.width;
   const i=Math.max(0,Math.min(GEO.view.length-1,Math.round((px-GEO.pL-GEO.slot/2)/GEO.slot)));
   const k=GEO.view[i],X=GEO.cx(i);
-  const g=$("xh");if(!g)return;
-  g.style.display="";
+  const g=$("xh");if(!g)return;g.style.display="";
   $("xh_v").setAttribute("x1",X);$("xh_v").setAttribute("x2",X);
   const yy=GEO.y(k.c);$("xh_h").setAttribute("y1",yy);$("xh_h").setAttribute("y2",yy);
-  const tip=$("c_tip");
-  const chg=(k.c/k.o-1)*100;
-  tip.innerHTML=`<div class="d">${fmtCandleTime(k)}</div>
+  const tip=$("c_tip");const chg=(k.c/k.o-1)*100;
+  tip.innerHTML=`<div class="d">${esc(fmtCandleTime(k))}</div>
     <b style="color:${k.c>=k.o?"#22c55e":"#ef4444"}">${pctf(chg)}</b><br>
-    O ${money(k.o)} · C <b>${money(k.c)}</b><br>
-    H ${money(k.h)} · L ${money(k.l)}${k.sma!=null?`<br><span style="color:#f59e0b">SMA ${money(k.sma)}</span>`:""}`;
+    O ${money(k.o)} · C <b>${money(k.c)}</b><br>H ${money(k.h)} · L ${money(k.l)}${k.sma!=null?`<br><span style="color:#f59e0b">SMA ${money(k.sma)}</span>`:""}`;
   tip.style.display="block";
   const wrap=svg.parentElement.getBoundingClientRect();
   const tw=tip.offsetWidth||160,th=tip.offsetHeight||80;
@@ -480,17 +442,14 @@ function eqMove(ev){
   const px=(ev.clientX-r.left)*EQGEO.W/r.width;
   const i=Math.max(0,Math.min(EQGEO.v.length-1,Math.round((px-8)/(EQGEO.W-16)*(EQGEO.v.length-1))));
   const pt=EQGEO.v[i],tip=$("e_tip");
-  tip.innerHTML=`<div class="d">${(pt.d||"").replace(" UTC","")}</div><b>${money(pt.v)}</b> <span class="${cls(pt.v-1000)}">${pctf((pt.v/1000-1)*100)}</span>`;
+  tip.innerHTML=`<div class="d">${esc((pt.d||"").replace(" UTC",""))}</div><b>${money(pt.v)}</b> <span class="${cls(pt.v-1000)}">${pctf((pt.v/1000-1)*100)}</span>`;
   tip.style.display="block";
-  const wrap=svg.parentElement.getBoundingClientRect();
-  const tw=tip.offsetWidth||150;
+  const wrap=svg.parentElement.getBoundingClientRect();const tw=tip.offsetWidth||150;
   let tx=(EQGEO.x(i)/EQGEO.W)*wrap.width+12;
   if(tx+tw>wrap.width-4)tx=(EQGEO.x(i)/EQGEO.W)*wrap.width-tw-12;
   tip.style.left=Math.max(4,tx)+"px";tip.style.top="8px";
 }
 function eqLeave(){$("e_tip").style.display="none";}
-
-/* websocket BTC */
 function closeWs(){if(S.ws){try{S.ws.close()}catch(e){}S.ws=null;}}
 function openWs(gen){
   let hi=0;
@@ -499,12 +458,9 @@ function openWs(gen){
     let ws;try{ws=new WebSocket(WSHOSTS[hi]+"btcusdt@kline_"+S.tf);}catch(e){setLive(false);return;}
     S.ws=ws;
     ws.onopen=()=>{if(gen===S.gen)setLive(true);};
-    ws.onmessage=ev=>{if(gen!==S.gen)return;
-      try{const k=JSON.parse(ev.data).k;if(!k)return;
-        const c={t:+k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c};
-        const a=S.kl,L=a[a.length-1];
-        if(L&&L.t===c.t)a[a.length-1]=c;else{a.push(c);while(a.length>360)a.shift();}
-        paintCandles();}catch(e){}};
+    ws.onmessage=ev=>{if(gen!==S.gen)return;try{const k=JSON.parse(ev.data).k;if(!k)return;
+      const c={t:+k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c};const a=S.kl,L=a[a.length-1];
+      if(L&&L.t===c.t)a[a.length-1]=c;else{a.push(c);while(a.length>360)a.shift();}paintCandles();}catch(e){}};
     ws.onclose=()=>{if(gen!==S.gen)return;setLive(false);hi=(hi+1)%WSHOSTS.length;setTimeout(open,3000);};
     ws.onerror=()=>{try{ws.close()}catch(e){}};
   })();
@@ -515,23 +471,20 @@ async function refreshAll(){
   if(S.busy)return;S.busy=true;
   try{
     S.freshest=0;
-    await Promise.all([loadBot("btc"),loadBot("qqq")]);
-    renderCard("btc");renderCard("qqq");renderHero();renderDetail();
+    await Promise.all(KEYS.map(loadBot));
+    KEYS.forEach(renderCard);renderHero();renderDetail();
     $("fresh").textContent=S.freshest?("Última ronda del bot "+ago(new Date(S.freshest).toISOString().replace("T"," ").replace(/\.\d+Z/," UTC"))):"esperando datos de los bots…";
-    // si el stream en vivo está caído, reintenta las velas en cada ciclo (5 min)
     if(BOTS[S.sel].candles.type==="binance"&&!S.wsLive)loadCandles();
   }finally{S.busy=false;$("refbtn").classList.remove("spin");}
 }
 function manual(){$("refbtn").classList.add("spin");$("fresh").textContent="actualizando…";refreshAll();loadCandles();}
 
-const csvg=$("candles");
-csvg.addEventListener("pointermove",candleMove);
-csvg.addEventListener("pointerleave",candleLeave);
-const esvg=$("eqchart");
-esvg.addEventListener("pointermove",eqMove);
-esvg.addEventListener("pointerleave",eqLeave);
-
+buildUI();
 $("card_btc").classList.add("on");
+$("candles").addEventListener("pointermove",candleMove);
+$("candles").addEventListener("pointerleave",candleLeave);
+$("eqchart").addEventListener("pointermove",eqMove);
+$("eqchart").addEventListener("pointerleave",eqLeave);
 refreshAll();loadCandles();
 setInterval(refreshAll,300000);
 setInterval(()=>{if(BOTS[S.sel].candles.type==="binance")loadCandles();},1800000);
