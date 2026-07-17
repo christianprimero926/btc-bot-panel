@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-07-16 23:12:35 UTC",
+  "updated_utc": "2026-07-17 03:40:35 UTC",
   "symbol": "GC=F",
-  "price": 3981.3,
-  "sma": 4586.33,
+  "price": 4004.3,
+  "sma": 4575.59,
   "sma_period": 100,
   "position": "CASH",
   "balance_usdt": 1000.0,
   "equity": 1000.0,
   "start_capital": 1000.0,
   "action": "HOLD_FLAT",
-  "reason": "En CASH: cierre 4044.00 <= SMA100 4586.33. Esperando tendencia."
+  "reason": "En CASH: cierre 3985.60 <= SMA100 4575.59. Esperando tendencia."
 }
