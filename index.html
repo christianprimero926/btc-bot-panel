@@ -102,6 +102,10 @@ tr:last-child td{border-bottom:none}
 .chip.buy{background:rgba(34,197,94,.15);color:var(--green)}
 .chip.sell{background:rgba(239,68,68,.15);color:var(--red)}
 .empty{color:var(--dim);font-size:13px;padding:6px 0}
+.dbanner{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);color:#fca5a5;border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;margin-bottom:14px}
+.dbanner b{color:#fff}
+.botcard.dgr{border-color:rgba(239,68,68,.35)}
+.badge.dgr{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
 .foot{color:var(--dimmer);font-size:12px;text-align:center;margin-top:22px;line-height:1.6}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .skel{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:sh 1.4s infinite;border-radius:8px;color:transparent!important}
@@ -142,10 +146,11 @@ tr:last-child td{border-bottom:none}
           <div><div style="font-weight:800" id="d_name">Bitcoin</div><div style="font-size:12px;color:var(--dim)" id="d_sym">BTC/USDT</div></div>
           <span class="badge cash" id="d_badge">…</span>
         </div>
+        <div id="d_danger" class="dbanner" style="display:none">⚠️ EXPERIMENTO EDUCATIVO — martingala en demo. Muestra por qué NUNCA usarla en real: gana verde un tiempo y luego revienta. <b>No fondear.</b></div>
         <div class="kpis">
           <div class="kpi"><div class="k">Precio</div><div class="v" id="d_price">—</div></div>
           <div class="kpi"><div class="k" id="d_smak">Media</div><div class="v" id="d_sma">—</div></div>
-          <div class="kpi"><div class="k">Distancia a la media</div><div class="v" id="d_gap">—</div></div>
+          <div class="kpi"><div class="k" id="d_gapk">Distancia a la media</div><div class="v" id="d_gap">—</div></div>
           <div class="kpi"><div class="k">Equity</div><div class="v" id="d_eq">—</div></div>
           <div class="kpi"><div class="k">Ganancia neta</div><div class="v" id="d_net">—</div><div class="sub" id="d_netpct">—</div></div>
         </div>
@@ -166,7 +171,7 @@ tr:last-child td{border-bottom:none}
       </div>
 
       <div class="card">
-        <div class="cardhead"><span class="t">Curva de equity (inicio $1,000)</span><span class="t" style="margin-left:auto" id="e_dd"></span></div>
+        <div class="cardhead"><span class="t" id="e_title">Curva de equity (inicio $1,000)</span><span class="t" style="margin-left:auto" id="e_dd"></span></div>
         <div class="chartwrap">
           <svg id="eqchart" viewBox="0 0 800 170" preserveAspectRatio="none"></svg>
           <div class="tooltip" id="e_tip"></div>
@@ -200,8 +205,12 @@ const BOTS={
   gold:{icon:"🥇",name:"Oro · XAUUSD",sym:"Gold (demo)",short:"🥇 Oro",smaN:100,
     files:{status:"gold_status.json",eq:"gold_equity_history.csv",tr:"gold_trades.csv"},
     candles:{type:"csv",file:"gold_candles.csv",tfs:["1d"],def:"1d"}},
+  mart:{icon:"🔬",name:"Martingala (LABORATORIO)",sym:"XAUUSD ×2 · demo",short:"🔬 Mart",smaN:0,danger:true,
+    files:{status:"mart_status.json",eq:"mart_equity_history.csv",tr:"mart_trades.csv"},
+    candles:{type:"none"}},
 };
 const KEYS=Object.keys(BOTS);
+const REAL_KEYS=KEYS.filter(k=>!BOTS[k].danger);   // portafolio real (excluye laboratorios)
 const KHOSTS=["https://data-api.binance.vision","https://api.binance.com"];
 const WSHOSTS=["wss://data-stream.binance.vision/ws/","wss://stream.binance.com:9443/ws/"];
 const S={sel:"btc",data:{},tf:"4h",kl:[],ws:null,gen:0,freshest:0,wsLive:false,busy:false};
@@ -216,7 +225,7 @@ const netUsd=s=>s&&Number.isFinite(s.equity)&&Number.isFinite(s.start_capital)?s
 
 /* ================= construir UI dinámica ================= */
 function buildUI(){
-  $("htiles").innerHTML=KEYS.map(k=>
+  $("htiles").innerHTML=REAL_KEYS.map(k=>
     `<div class="hstat"><div class="cap">${BOTS[k].short}</div><div class="v" id="h_${k}">—</div><div class="delta flat" id="h_${k}_d">—</div></div>`).join("");
   $("cards").innerHTML=KEYS.map(k=>{const B=BOTS[k];return(
     `<div class="botcard" id="card_${k}" role="button" tabindex="0" aria-label="Ver ${B.name}"
@@ -263,7 +272,8 @@ function renderCard(key){
   eqEl.textContent=money(s.equity);
   const r=$("cr_"+key);r.textContent=pctf(ret)+"  ·  "+signMoney(net);r.className="rt "+cls(net||0);
   const b=$("cb_"+key);const long=s.position==="LONG";
-  b.className="badge "+(long?"long":"cash");b.textContent=long?"● LONG":"○ CASH";
+  if(BOTS[key].danger){b.className="badge dgr";b.textContent=s.mart_blown?"💀 RIP":"🔬 LAB";$("card_"+key).classList.add("dgr");}
+  else{b.className="badge "+(long?"long":"cash");b.textContent=long?"● LONG":"○ CASH";}
   drawSpark("sp_"+key,D.eq.map(x=>x.v));
 }
 function drawSpark(id,v){const svg=$(id);svg.innerHTML="";if(v.length<2)return;
@@ -273,13 +283,13 @@ function drawSpark(id,v){const svg=$(id);svg.innerHTML="";if(v.length<2)return;
   svg.innerHTML=`<polyline points="${v.map((n,i)=>x(i)+","+y(n)).join(" ")}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round"/>`;}
 function renderHero(){
   let tot=0,base=0,cnt=0;
-  KEYS.forEach(k=>{const s=S.data[k].status;if(s&&Number.isFinite(s.equity)&&s.start_capital>0){tot+=s.equity;base+=s.start_capital;cnt++;}
+  REAL_KEYS.forEach(k=>{const s=S.data[k].status;if(s&&Number.isFinite(s.equity)&&s.start_capital>0){tot+=s.equity;base+=s.start_capital;cnt++;}
     $("h_"+k).textContent=s?money(s.equity):"—";
     const el=$("h_"+k+"_d");
     if(s){el.textContent=(s.position==="LONG"?"● ":"○ ")+pctf(s._ret);el.className="delta "+cls(s._ret||0);}
     else{el.textContent="esperando…";el.className="delta flat";}});
-  // Rótulo transparente: cuántos de los N bots están contados en el total.
-  $("h_cap").textContent=`Portafolio total · ${cnt} de ${KEYS.length} bots`;
+  // Rótulo transparente: cuántos de los bots reales están contados (excluye laboratorios).
+  $("h_cap").textContent=`Portafolio total · ${cnt} de ${REAL_KEYS.length} bots`;
   if(cnt>0){const d=(tot/base-1)*100,net=tot-base;
     $("h_total").textContent=money(tot);
     const e=$("h_delta");e.textContent=pctf(d)+"  ·  "+signMoney(net)+" total";e.className="delta "+cls(net||0);}
@@ -298,15 +308,25 @@ function renderDetail(){
   const key=S.sel,B=BOTS[key],s=S.data[key].status;
   $("d_icon").textContent=B.icon;$("d_name").textContent=B.name;$("d_sym").textContent=B.sym;
   $("c_sym").textContent=B.sym;
+  $("d_danger").style.display=B.danger?"block":"none";
   if(s){
     const long=s.position==="LONG";
-    const b=$("d_badge");b.className="badge "+(long?"long":"cash");b.textContent=long?"● COMPRADO (LONG)":"○ EN CASH (fuera)";
+    const b=$("d_badge");
+    if(B.danger){b.className="badge dgr";b.textContent=s.mart_blown?"💀 REVENTADO":"🔬 operando";}
+    else{b.className="badge "+(long?"long":"cash");b.textContent=long?"● COMPRADO (LONG)":"○ EN CASH (fuera)";}
     $("d_price").textContent=money(s.price);
-    $("d_smak").textContent="Media "+(s.sma_period||B.smaN)+" días";
-    $("d_sma").textContent=money(s._smaVal);
-    const gap=s._smaVal>0?(s.price/s._smaVal-1)*100:NaN,g=$("d_gap");
-    g.textContent=Number.isFinite(gap)?pctf(gap)+(gap>=0?" ↑ dentro":" ↓ cash"):"—";
-    g.className="v "+(Number.isFinite(gap)?cls(gap):"flat");
+    if(B.danger){
+      $("d_smak").textContent="Canastas ganadas";$("d_sma").textContent=(s.mart_won??"—")+" verdes";
+      $("d_gapk").textContent="Drawdown flotante";const g=$("d_gap");
+      g.textContent=(s.mart_dd??"—")+"%";g.className="v neg";
+    }else{
+      $("d_smak").textContent="Media "+(s.sma_period||B.smaN)+" días";
+      $("d_sma").textContent=money(s._smaVal);
+      $("d_gapk").textContent="Distancia a la media";
+      const gap=s._smaVal>0?(s.price/s._smaVal-1)*100:NaN,g=$("d_gap");
+      g.textContent=Number.isFinite(gap)?pctf(gap)+(gap>=0?" ↑ dentro":" ↓ cash"):"—";
+      g.className="v "+(Number.isFinite(gap)?cls(gap):"flat");
+    }
     $("d_eq").textContent=money(s.equity);
     const net=netUsd(s),ne=$("d_net");
     ne.textContent=signMoney(net);ne.className="v "+cls(net||0);
@@ -319,23 +339,25 @@ function renderDetail(){
   renderEquity();renderTrades();
 }
 function renderEquity(){
-  const v=S.data[S.sel].eq;
+  const v=S.data[S.sel].eq,st=S.data[S.sel].status;
+  const b0=st&&st.start_capital>0?st.start_capital:1000;
+  $("e_title").textContent=`Curva de equity (inicio ${money(b0)})`;
   const svg=$("eqchart");svg.innerHTML="";$("e_tip").style.display="none";EQGEO=null;
-  if(!v||v.length<2){$("e_note").textContent="La curva se dibuja con ≥2 días de historial.";$("e_dd").textContent="";return;}
+  if(!v||v.length<2){$("e_note").textContent="La curva se dibuja con ≥2 puntos de historial.";$("e_dd").textContent="";return;}
   $("e_note").textContent="";
   $("e_dd").textContent="drawdown máx "+maxDD(v.map(x=>x.v)).toFixed(1)+"%";
-  const W=800,H=170,p=8,vals=v.map(x=>x.v),mn=Math.min(...vals,1000),mx=Math.max(...vals,1000),rg=(mx-mn)||1;
+  const W=800,H=170,p=8,vals=v.map(x=>x.v),mn=Math.min(...vals,b0),mx=Math.max(...vals,b0),rg=(mx-mn)||1;
   const x=i=>p+i*(W-2*p)/(v.length-1),y=n=>H-p-(n-mn)/rg*(H-2*p);
-  const last=vals[vals.length-1],c=last>=1000?"#22c55e":"#ef4444";
+  const last=vals[vals.length-1],c=last>=b0?"#22c55e":"#ef4444";
   const line=vals.map((n,i)=>x(i)+","+y(n)).join(" ");
   const area=`${x(0)},${H-p} ${line} ${x(v.length-1)},${H-p}`;
   svg.innerHTML=
     `<defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c}" stop-opacity=".28"/><stop offset="100%" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>
-     <line x1="0" y1="${y(1000)}" x2="${W}" y2="${y(1000)}" stroke="#3a4350" stroke-dasharray="5 5"/>
+     <line x1="0" y1="${y(b0)}" x2="${W}" y2="${y(b0)}" stroke="#3a4350" stroke-dasharray="5 5"/>
      <polygon points="${area}" fill="url(#eg)"/>
      <polyline points="${line}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round"/>
      <circle cx="${x(v.length-1)}" cy="${y(last)}" r="4" fill="${c}"/>`;
-  EQGEO={v,x,y,W,H};
+  EQGEO={v,x,y,W,H,b0};
 }
 function renderTrades(){
   const tr=S.data[S.sel].trades;
@@ -354,12 +376,18 @@ function renderTrades(){
 
 /* ================= velas ================= */
 let GEO=null,EQGEO=null;
-function tfButtons(){$("c_tfs").innerHTML=BOTS[S.sel].candles.tfs.map(t=>`<button class="tf ${t===S.tf?"on":""}" onclick="setTf('${t}')">${t.toUpperCase()}</button>`).join("");}
+function tfButtons(){const tfs=BOTS[S.sel].candles.tfs||[];$("c_tfs").innerHTML=tfs.map(t=>`<button class="tf ${t===S.tf?"on":""}" onclick="setTf('${t}')">${t.toUpperCase()}</button>`).join("");}
 function setTf(t){S.tf=t;tfButtons();loadCandles();}
 async function loadCandles(){
   tfButtons();
   const B=BOTS[S.sel],gen=++S.gen;
   closeWs();
+  if(B.candles.type==="none"){
+    S.kl=[];$("candles").innerHTML="";
+    $("c_live").className="live off";$("c_live").textContent="";
+    $("c_note").innerHTML="🔬 Este laboratorio no usa gráfico de velas. Mira la <b>CURVA DE EQUITY</b> de abajo: sube en verde durante semanas… y luego se desploma a cero. Ese es el martingala.";
+    return;
+  }
   if(B.candles.type==="binance"){
     setLive(null);
     try{
@@ -441,8 +469,8 @@ function eqMove(ev){
   const svg=$("eqchart"),r=svg.getBoundingClientRect();
   const px=(ev.clientX-r.left)*EQGEO.W/r.width;
   const i=Math.max(0,Math.min(EQGEO.v.length-1,Math.round((px-8)/(EQGEO.W-16)*(EQGEO.v.length-1))));
-  const pt=EQGEO.v[i],tip=$("e_tip");
-  tip.innerHTML=`<div class="d">${esc((pt.d||"").replace(" UTC",""))}</div><b>${money(pt.v)}</b> <span class="${cls(pt.v-1000)}">${pctf((pt.v/1000-1)*100)}</span>`;
+  const pt=EQGEO.v[i],tip=$("e_tip"),b0=EQGEO.b0||1000;
+  tip.innerHTML=`<div class="d">${esc((pt.d||"").replace(" UTC",""))}</div><b>${money(pt.v)}</b> <span class="${cls(pt.v-b0)}">${pctf((pt.v/b0-1)*100)}</span>`;
   tip.style.display="block";
   const wrap=svg.parentElement.getBoundingClientRect();const tw=tip.offsetWidth||150;
   let tx=(EQGEO.x(i)/EQGEO.W)*wrap.width+12;

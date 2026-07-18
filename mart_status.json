@@ -1,0 +1,16 @@
+{
+  "updated_utc": "2026-07-18 20:46:48 UTC",
+  "symbol": "XAUUSD",
+  "price": 4018.8,
+  "sma": 4018.8,
+  "sma_period": 0,
+  "position": "CASH",
+  "balance_usdt": 0.0,
+  "equity": 0.0,
+  "start_capital": 3000.0,
+  "reason": "\ud83d\udd2c LABORATORIO \u2014 martingala x2 en oro (60 d\u00edas reales). Gan\u00f3 519 canastas verdes\u2026 y REVENT\u00d3 a los 34 d\u00edas (perdi\u00f3 TODO). \u26a0\ufe0f EXPERIMENTO EDUCATIVO \u2014 NO usar en real.",
+  "mart_won": 519,
+  "mart_dd": 112.4,
+  "mart_blown": true,
+  "mart_survived_days": 34.5
+}
