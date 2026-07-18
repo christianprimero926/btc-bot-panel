@@ -205,9 +205,15 @@ const BOTS={
   gold:{icon:"🥇",name:"Oro · XAUUSD",sym:"Gold (demo)",short:"🥇 Oro",smaN:100,
     files:{status:"gold_status.json",eq:"gold_equity_history.csv",tr:"gold_trades.csv"},
     candles:{type:"csv",file:"gold_candles.csv",tfs:["1d"],def:"1d"}},
-  mart:{icon:"🔬",name:"Martingala (LABORATORIO)",sym:"XAUUSD ×2 · demo",short:"🔬 Mart",smaN:0,danger:true,
-    files:{status:"mart_status.json",eq:"mart_equity_history.csv",tr:"mart_trades.csv"},
-    candles:{type:"none"}},
+  mgold:{icon:"🔬",name:"Martingala Oro (LAB)",sym:"XAUUSD ×2 · en vivo",short:"🔬 M·Oro",smaN:0,danger:true,
+    files:{status:"mgold_status.json",eq:"mgold_equity_history.csv",tr:"mgold_trades.csv"},
+    candles:{type:"csv",file:"mgold_candles.csv",tfs:["1d"],def:"1d"}},
+  meur:{icon:"🔬",name:"Martingala EUR/USD (LAB)",sym:"EURUSD ×2 · en vivo",short:"🔬 M·EUR",smaN:0,danger:true,
+    files:{status:"meur_status.json",eq:"meur_equity_history.csv",tr:"meur_trades.csv"},
+    candles:{type:"csv",file:"meur_candles.csv",tfs:["1d"],def:"1d"}},
+  mjpy:{icon:"🔬",name:"Martingala USD/JPY (LAB)",sym:"USDJPY ×2 · en vivo",short:"🔬 M·JPY",smaN:0,danger:true,
+    files:{status:"mjpy_status.json",eq:"mjpy_equity_history.csv",tr:"mjpy_trades.csv"},
+    candles:{type:"csv",file:"mjpy_candles.csv",tfs:["1d"],def:"1d"}},
 };
 const KEYS=Object.keys(BOTS);
 const REAL_KEYS=KEYS.filter(k=>!BOTS[k].danger);   // portafolio real (excluye laboratorios)
@@ -418,7 +424,7 @@ function paintCandles(){
   if(!arr||arr.length<2){$("c_note").textContent="Aún no hay velas suficientes para dibujar el gráfico.";return;}
   const B=BOTS[S.sel],smaN=B.smaN,showN=120;
   const closes=arr.map(k=>k.c);
-  const smaAt=i=>{if(i<smaN-1)return null;let s=0;for(let j=i-smaN+1;j<=i;j++)s+=closes[j];return s/smaN;};
+  const smaAt=i=>{if(smaN<2||i<smaN-1)return null;let s=0;for(let j=i-smaN+1;j<=i;j++)s+=closes[j];return s/smaN;};
   const N=arr.length,st=Math.max(0,N-showN);
   const view=[];for(let i=st;i<N;i++)view.push({...arr[i],sma:smaAt(i)});
   let lo=1/0,hi=-1/0;view.forEach(d=>{lo=Math.min(lo,d.l);hi=Math.max(hi,d.h);if(d.sma!=null){lo=Math.min(lo,d.sma);hi=Math.max(hi,d.sma);}});
@@ -439,7 +445,9 @@ function paintCandles(){
   s+=`<g id="xh" style="display:none"><line id="xh_v" y1="${pT}" y2="${H-pB}" stroke="rgba(255,255,255,.25)" stroke-dasharray="3 3"/><line id="xh_h" x1="${pL}" x2="${W-pR}" stroke="rgba(255,255,255,.25)" stroke-dasharray="3 3"/></g>`;
   svg.innerHTML=s;
   GEO={view,cx,y,slot,pL,pR,pT,pB,W,H};
-  $("c_note").innerHTML=`🟠 Media de ${smaN} días. El bot <b>compra</b> cuando el precio cierra por <b>encima</b> de la línea y pasa a <b>cash</b> por debajo. Pasa el dedo o el mouse por el gráfico para inspeccionar cada vela.`;
+  $("c_note").innerHTML=B.danger
+    ? `🔬 Precio real de ${esc(B.sym)}. El martingala <b>compra y dobla</b> cada vez que este precio cae; gana migajas en los rebotes… hasta que cae sin rebotar. Mira su curva de equity abajo.`
+    : `🟠 Media de ${smaN} días. El bot <b>compra</b> cuando el precio cierra por <b>encima</b> de la línea y pasa a <b>cash</b> por debajo. Pasa el dedo o el mouse por el gráfico para inspeccionar cada vela.`;
 }
 function fmtCandleTime(k){if(k.d)return k.d;const dt=new Date(k.t);return dt.toLocaleDateString("es-CO",{day:"2-digit",month:"short"})+" "+dt.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});}
 function candleMove(ev){
