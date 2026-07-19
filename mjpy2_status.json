@@ -1,0 +1,16 @@
+{
+  "updated_utc": "2026-07-19 00:12:57 UTC",
+  "symbol": "USDJPY",
+  "price": 162.353,
+  "sma": 162.353,
+  "sma_period": 0,
+  "position": "LONG",
+  "balance_usdt": 1000.0,
+  "equity": 1000.0,
+  "start_capital": 1000.0,
+  "reason": "\ud83d\udd2c LABORATORIO EN VIVO \u2014 martingala \u00d72 sobre USDJPY. Piernas abiertas ahora: 1 | migajas ganadas: 0 | reventones: 0. Cada ronda dobla si el precio cae. \u26a0\ufe0f NO usar en real.",
+  "mart_won": 0,
+  "mart_dd": 0.0,
+  "mart_blown": false,
+  "mart_legs": 1
+}
