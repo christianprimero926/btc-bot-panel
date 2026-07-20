@@ -206,17 +206,17 @@ const BOTS={
     files:{status:"gold_status.json",eq:"gold_equity_history.csv",tr:"gold_trades.csv"},
     candles:{type:"csv",file:"gold_candles.csv",tfs:["1d"],def:"1d"}},
   mgold15:{icon:"🔬",name:"Martingala Oro · normal ×1.5",sym:"XAUUSD ×1.5 · vivo",short:"🔬 Oro ×1.5",smaN:0,danger:true,
-    files:{status:"mgold15_status.json",eq:"mgold15_equity_history.csv"},candles:{type:"csv",file:"mgold15_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"mgold15_status.json",eq:"mgold15_equity_history.csv",tr:"mgold15_trades.csv"},candles:{type:"csv",file:"mgold15_candles.csv",tfs:["1d"],def:"1d"}},
   mgold2:{icon:"🔬",name:"Martingala Oro · ×2",sym:"XAUUSD ×2 · vivo",short:"🔬 Oro ×2",smaN:0,danger:true,
-    files:{status:"mgold2_status.json",eq:"mgold2_equity_history.csv"},candles:{type:"csv",file:"mgold2_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"mgold2_status.json",eq:"mgold2_equity_history.csv",tr:"mgold2_trades.csv"},candles:{type:"csv",file:"mgold2_candles.csv",tfs:["1d"],def:"1d"}},
   meur15:{icon:"🔬",name:"Martingala EUR/USD · normal ×1.5",sym:"EURUSD ×1.5 · vivo",short:"🔬 EUR ×1.5",smaN:0,danger:true,
-    files:{status:"meur15_status.json",eq:"meur15_equity_history.csv"},candles:{type:"csv",file:"meur15_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"meur15_status.json",eq:"meur15_equity_history.csv",tr:"meur15_trades.csv"},candles:{type:"csv",file:"meur15_candles.csv",tfs:["1d"],def:"1d"}},
   meur2:{icon:"🔬",name:"Martingala EUR/USD · ×2",sym:"EURUSD ×2 · vivo",short:"🔬 EUR ×2",smaN:0,danger:true,
-    files:{status:"meur2_status.json",eq:"meur2_equity_history.csv"},candles:{type:"csv",file:"meur2_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"meur2_status.json",eq:"meur2_equity_history.csv",tr:"meur2_trades.csv"},candles:{type:"csv",file:"meur2_candles.csv",tfs:["1d"],def:"1d"}},
   mjpy15:{icon:"🔬",name:"Martingala USD/JPY · normal ×1.5",sym:"USDJPY ×1.5 · vivo",short:"🔬 JPY ×1.5",smaN:0,danger:true,
-    files:{status:"mjpy15_status.json",eq:"mjpy15_equity_history.csv"},candles:{type:"csv",file:"mjpy15_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"mjpy15_status.json",eq:"mjpy15_equity_history.csv",tr:"mjpy15_trades.csv"},candles:{type:"csv",file:"mjpy15_candles.csv",tfs:["1d"],def:"1d"}},
   mjpy2:{icon:"🔬",name:"Martingala USD/JPY · ×2",sym:"USDJPY ×2 · vivo",short:"🔬 JPY ×2",smaN:0,danger:true,
-    files:{status:"mjpy2_status.json",eq:"mjpy2_equity_history.csv"},candles:{type:"csv",file:"mjpy2_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"mjpy2_status.json",eq:"mjpy2_equity_history.csv",tr:"mjpy2_trades.csv"},candles:{type:"csv",file:"mjpy2_candles.csv",tfs:["1d"],def:"1d"}},
 };
 const KEYS=Object.keys(BOTS);
 const REAL_KEYS=KEYS.filter(k=>!BOTS[k].danger);   // portafolio real (excluye laboratorios)
