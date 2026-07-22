@@ -1,16 +1,16 @@
 {
-  "updated_utc": "2026-07-22 10:35:05 UTC",
+  "updated_utc": "2026-07-22 14:25:35 UTC",
   "symbol": "XAUUSD",
-  "price": 4126.0,
-  "sma": 4126.0,
+  "price": 4157.7002,
+  "sma": 4157.7002,
   "sma_period": 0,
   "position": "LONG",
-  "balance_usdt": 1041.02,
-  "equity": 1041.02,
+  "balance_usdt": 1047.45,
+  "equity": 1047.45,
   "start_capital": 1000.0,
-  "reason": "\ud83d\udd2c LABORATORIO EN VIVO \u2014 martingala \u00d72 sobre XAUUSD con los parametros REALES del bot de las capturas (paso 0.073%, TP 0.073%). Velas de 1m procesadas esta ronda: 233 | piernas abiertas: 1 | migajas ganadas: 128 | reventones: 0. El backtest de estos mismos parametros revienta el 91% de las ventanas de 180d. \u26a0\ufe0f NO usar en real.",
-  "mart_won": 128,
+  "reason": "\ud83d\udd2c LABORATORIO EN VIVO \u2014 martingala \u00d72 sobre XAUUSD con los parametros REALES del bot de las capturas (paso 0.073%, TP 0.073%). Velas de 1m procesadas esta ronda: 231 | piernas abiertas: 2 | migajas ganadas: 151 | reventones: 0. El backtest de estos mismos parametros revienta el 91% de las ventanas de 180d. \u26a0\ufe0f NO usar en real.",
+  "mart_won": 151,
   "mart_dd": 0.0,
   "mart_blown": false,
-  "mart_legs": 1
+  "mart_legs": 2
 }
