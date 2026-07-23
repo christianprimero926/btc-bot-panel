@@ -1,16 +1,16 @@
 {
-  "updated_utc": "2026-07-23 10:35:52 UTC",
+  "updated_utc": "2026-07-23 14:35:12 UTC",
   "symbol": "USDJPY",
-  "price": 163.357,
-  "sma": 163.357,
+  "price": 163.942,
+  "sma": 163.942,
   "sma_period": 0,
   "position": "LONG",
-  "balance_usdt": 1001.36,
-  "equity": 1001.36,
+  "balance_usdt": 1001.82,
+  "equity": 1001.82,
   "start_capital": 1000.0,
-  "reason": "\ud83d\udd2c LABORATORIO EN VIVO \u2014 martingala \u00d71.5 sobre USDJPY con los parametros REALES del bot de las capturas (paso 0.073%, TP 0.073%). Velas de 1m procesadas esta ronda: 234 | piernas abiertas: 2 | migajas ganadas: 14 | reventones: 0. El backtest de estos mismos parametros revienta el 91% de las ventanas de 180d. \u26a0\ufe0f NO usar en real.",
-  "mart_won": 14,
+  "reason": "\ud83d\udd2c LABORATORIO EN VIVO \u2014 martingala \u00d71.5 sobre USDJPY con los parametros REALES del bot de las capturas (paso 0.073%, TP 0.073%). Velas de 1m procesadas esta ronda: 240 | piernas abiertas: 1 | migajas ganadas: 20 | reventones: 0. El backtest de estos mismos parametros revienta el 91% de las ventanas de 180d. \u26a0\ufe0f NO usar en real.",
+  "mart_won": 20,
   "mart_dd": 0.0,
   "mart_blown": false,
-  "mart_legs": 2
+  "mart_legs": 1
 }
