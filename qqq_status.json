@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-07-27 19:57:03 UTC",
+  "updated_utc": "2026-07-27 21:31:06 UTC",
   "symbol": "QQQ",
-  "price": 682.25,
-  "sma": 652.08,
+  "price": 682.12,
+  "sma": 651.58,
   "sma_period": 150,
   "position": "LONG",
   "balance_usdt": 0.0,
-  "equity": 940.09,
+  "equity": 939.91,
   "start_capital": 1000.0,
   "action": "HOLD_LONG",
-  "reason": "LONG abierto | flotante -5.96% | cierre 684.23 > SMA 652.08"
+  "reason": "LONG abierto | flotante -5.98% | cierre 691.96 > SMA 651.58"
 }
