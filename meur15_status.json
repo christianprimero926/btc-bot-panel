@@ -1,16 +1,16 @@
 {
-  "updated_utc": "2026-08-02 21:11:49 UTC",
+  "updated_utc": "2026-08-02 23:14:17 UTC",
   "symbol": "EURUSD",
-  "price": 1.1528,
-  "sma": 1.1528,
+  "price": 1.1549,
+  "sma": 1.1549,
   "sma_period": 0,
   "position": "LONG",
-  "balance_usdt": 1008.5,
-  "equity": 1008.5,
+  "balance_usdt": 1008.83,
+  "equity": 1008.83,
   "start_capital": 1000.0,
-  "reason": "\ud83d\udd2c LABORATORIO EN VIVO \u2014 martingala \u00d71.5 sobre EURUSD con los parametros REALES del bot de las capturas (paso 0.073%, TP 0.073%). Velas de 1m procesadas esta ronda: 0 | piernas abiertas: 3 | migajas ganadas: 36 | reventones: 0. El backtest de estos mismos parametros revienta el 91% de las ventanas de 180d. \u26a0\ufe0f NO usar en real.",
-  "mart_won": 36,
+  "reason": "\ud83d\udd2c LABORATORIO EN VIVO \u2014 martingala \u00d71.5 sobre EURUSD con los parametros REALES del bot de las capturas (paso 0.073%, TP 0.073%). Velas de 1m procesadas esta ronda: 14 | piernas abiertas: 1 | migajas ganadas: 37 | reventones: 0. El backtest de estos mismos parametros revienta el 91% de las ventanas de 180d. \u26a0\ufe0f NO usar en real.",
+  "mart_won": 37,
   "mart_dd": 0.0,
   "mart_blown": false,
-  "mart_legs": 3
+  "mart_legs": 1
 }
