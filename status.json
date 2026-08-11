@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-08-10 22:58:05 UTC",
+  "updated_utc": "2026-08-11 02:29:30 UTC",
   "symbol": "BTCUSDT",
-  "price": 64006.0,
-  "sma": 67918.38,
+  "price": 64054.54,
+  "sma": 67771.21,
   "sma_period": 100,
   "position": "CASH",
   "balance_usdt": 1000.0,
   "equity": 1000.0,
   "start_capital": 1000.0,
   "action": "HOLD_FLAT",
-  "reason": "En CASH: cierre 64901.59 <= SMA100 67918.38. Esperando tendencia."
+  "reason": "En CASH: cierre 63970.01 <= SMA100 67771.21. Esperando tendencia."
 }
