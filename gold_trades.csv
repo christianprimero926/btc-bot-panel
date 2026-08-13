@@ -1,0 +1,2 @@
+fecha_utc,accion,symbol,precio,cantidad,pnl_pct,equity_despues,motivo
+2026-08-13 05:50:06 UTC,BUY,GC=F,4458.00,0.224204,,999.50,Precio 4408.90 > SMA100 4394.70 (1d) -> LONG
