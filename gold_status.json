@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-08-13 05:50:07 UTC",
+  "updated_utc": "2026-08-13 07:55:24 UTC",
   "symbol": "GC=F",
-  "price": 4458.0,
+  "price": 4435.3,
   "sma": 4394.7,
   "sma_period": 100,
   "position": "LONG",
   "balance_usdt": 0.0,
-  "equity": 999.5,
+  "equity": 994.41,
   "start_capital": 1000.0,
-  "action": "BUY",
-  "reason": "Precio 4408.90 > SMA100 4394.70 (1d) -> LONG"
+  "action": "HOLD_LONG",
+  "reason": "LONG abierto | flotante -0.51% | cierre 4408.90 > SMA 4394.70"
 }
