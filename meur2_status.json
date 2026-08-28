@@ -1,16 +1,16 @@
 {
-  "updated_utc": "2026-08-21 04:19:12 UTC",
+  "updated_utc": "2026-08-28 02:42:38 UTC",
   "symbol": "EURUSD",
-  "price": 1.1699,
-  "sma": 1.1699,
+  "price": 1.1652,
+  "sma": 1.1652,
   "sma_period": 0,
   "position": "LONG",
-  "balance_usdt": 1042.92,
-  "equity": 1042.92,
+  "balance_usdt": 1051.33,
+  "equity": 1051.33,
   "start_capital": 1000.0,
-  "reason": "\ud83d\udd2c LABORATORIO EN VIVO \u2014 martingala \u00d72 sobre EURUSD. Hueco del 2026-08-14 05:50 UTC al 2026-08-14 21:25 UTC RELLENADO con velas de 5m (Actions estuvo caido por facturacion). Canastas ganadas: 91 | reventones: 0. \u26a0\ufe0f NO usar en real.",
-  "mart_won": 91,
+  "reason": "\ud83d\udd2c LABORATORIO EN VIVO \u2014 martingala \u00d72 sobre EURUSD. Hueco del 2026-08-21 04:20 UTC al 2026-08-21 21:25 UTC RELLENADO con velas de 5m (Actions estuvo caido por facturacion). Canastas ganadas: 98 | reventones: 0. \u26a0\ufe0f NO usar en real.",
+  "mart_won": 98,
   "mart_dd": 0.0,
   "mart_blown": false,
-  "mart_legs": 1
+  "mart_legs": 2
 }

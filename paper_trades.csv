@@ -1,2 +1,2 @@
 fecha_utc,accion,symbol,precio,cantidad,pnl_pct,equity_despues,motivo
-2026-08-21 04:15:38 UTC,BUY,BTCUSDT,74855.99,0.013346,,999.00,Precio 73025.15 > SMA100 66222.19 (1d) -> LONG
+2026-08-20 00:15:00 UTC,BUY,BTCUSDT,69334.78,0.014408,,1052.17,Precio 69334.79 > SMA100 66296.98 (1d) -> LONG  [replay]

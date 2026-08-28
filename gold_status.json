@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-08-21 04:15:53 UTC",
+  "updated_utc": "2026-08-28 02:42:25 UTC",
   "symbol": "GC=F",
-  "price": 4594.5,
-  "sma": 4392.13,
+  "price": 4635.9,
+  "sma": 4390.59,
   "sma_period": 100,
   "position": "LONG",
   "balance_usdt": 0.0,
-  "equity": 980.13,
+  "equity": 990.0,
   "start_capital": 1000.0,
-  "action": "BUY",
-  "reason": "Precio 4516.30 > SMA100 4392.13 (1d) -> LONG"
+  "action": "HOLD_LONG",
+  "reason": "LONG: cierre 4635.90 > SMA100 4390.59. Los dias de la caida se reprodujeron con sus propios precios."
 }
