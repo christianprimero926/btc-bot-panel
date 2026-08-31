@@ -262,17 +262,17 @@ const BOTS={
     files:{status:"mjpy2_status.json",eq:"mjpy2_equity_history.csv",tr:"mjpy2_trades.csv"},candles:{type:"csv",file:"mjpy2_candles.csv",tfs:["1d"],def:"1d"}},
   /* --- gemelos SIMULADOS (Monte Carlo): mismo motor, precios sintéticos --- */
   mcgold15:{icon:"🎲",name:"SIM · Oro ×1.5",sym:"XAUUSD ×1.5 · simulado",short:"🎲 Oro ×1.5",smaN:0,sim:true,
-    files:{status:"mcgold15_status.json",eq:"mcgold15_equity_history.csv"},candles:{type:"csv",file:"mgold15_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"mcgold15_status.json",eq:"mcgold15_equity_history.csv"},candles:{type:"none"}},
   mcgold2:{icon:"🎲",name:"SIM · Oro ×2",sym:"XAUUSD ×2 · simulado",short:"🎲 Oro ×2",smaN:0,sim:true,
-    files:{status:"mcgold2_status.json",eq:"mcgold2_equity_history.csv"},candles:{type:"csv",file:"mgold2_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"mcgold2_status.json",eq:"mcgold2_equity_history.csv"},candles:{type:"none"}},
   mceur15:{icon:"🎲",name:"SIM · EUR/USD ×1.5",sym:"EURUSD ×1.5 · simulado",short:"🎲 EUR ×1.5",smaN:0,sim:true,
-    files:{status:"mceur15_status.json",eq:"mceur15_equity_history.csv"},candles:{type:"csv",file:"meur15_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"mceur15_status.json",eq:"mceur15_equity_history.csv"},candles:{type:"none"}},
   mceur2:{icon:"🎲",name:"SIM · EUR/USD ×2",sym:"EURUSD ×2 · simulado",short:"🎲 EUR ×2",smaN:0,sim:true,
-    files:{status:"mceur2_status.json",eq:"mceur2_equity_history.csv"},candles:{type:"csv",file:"meur2_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"mceur2_status.json",eq:"mceur2_equity_history.csv"},candles:{type:"none"}},
   mcjpy15:{icon:"🎲",name:"SIM · USD/JPY ×1.5",sym:"USDJPY ×1.5 · simulado",short:"🎲 JPY ×1.5",smaN:0,sim:true,
-    files:{status:"mcjpy15_status.json",eq:"mcjpy15_equity_history.csv"},candles:{type:"csv",file:"mjpy15_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"mcjpy15_status.json",eq:"mcjpy15_equity_history.csv"},candles:{type:"none"}},
   mcjpy2:{icon:"🎲",name:"SIM · USD/JPY ×2",sym:"USDJPY ×2 · simulado",short:"🎲 JPY ×2",smaN:0,sim:true,
-    files:{status:"mcjpy2_status.json",eq:"mcjpy2_equity_history.csv"},candles:{type:"csv",file:"mjpy2_candles.csv",tfs:["1d"],def:"1d"}},
+    files:{status:"mcjpy2_status.json",eq:"mcjpy2_equity_history.csv"},candles:{type:"none"}},
 };
 const KEYS=Object.keys(BOTS);
 const REAL_KEYS=KEYS.filter(k=>!BOTS[k].danger&&!BOTS[k].sim); // portafolio real: sin laboratorios ni simulados
@@ -337,7 +337,7 @@ function renderCard(key){
   eqEl.textContent=money(s.equity);
   const r=$("cr_"+key);r.textContent=pctf(ret)+"  ·  "+signMoney(net);r.className="rt "+cls(net||0);
   const b=$("cb_"+key);const long=s.position==="LONG";
-  if(BOTS[key].sim){b.className="badge sim";b.textContent="🎲 SIM";$("card_"+key).classList.add("simc");}
+  if(BOTS[key].sim){b.className="badge sim";b.textContent="🎲 SIM";$("card_"+key).classList.add("simc","dgr");}
   else
   if(BOTS[key].danger){b.className="badge dgr";b.textContent=s.mart_blown?"💀 RIP":"🔬 LAB";$("card_"+key).classList.add("dgr");}
   else{b.className="badge "+(long?"long":"cash");b.textContent=long?"● LONG":"○ CASH";}
@@ -379,7 +379,7 @@ function renderDetail(){
   const key=S.sel,B=BOTS[key],s=S.data[key].status;
   $("d_icon").textContent=B.icon;$("d_name").textContent=B.name;$("d_sym").textContent=B.sym;
   $("c_sym").textContent=B.sym;
-  $("d_danger").style.display=B.danger?"block":"none";
+  $("d_danger").style.display=(B.danger||B.sim)?"block":"none";
   if(s){
     const long=s.position==="LONG";
     const b=$("d_badge");
@@ -387,7 +387,7 @@ function renderDetail(){
     else if(B.danger){b.className="badge dgr";b.textContent=s.mart_blown?"💀 REVENTADO":"🔬 operando";}
     else{b.className="badge "+(long?"long":"cash");b.textContent=long?"● COMPRADO (LONG)":"○ EN CASH (fuera)";}
     $("d_price").textContent=money(s.price);
-    if(B.danger){
+    if(B.danger||B.sim){   // los simulados son martingalas: mismos KPIs que el laboratorio
       $("d_smak").textContent="Canastas ganadas";$("d_sma").textContent=(s.mart_won??"—")+" verdes";
       $("d_gapk").textContent="Drawdown flotante";const g=$("d_gap");
       g.textContent=(s.mart_dd??"—")+"%";g.className="v neg";
@@ -457,7 +457,9 @@ async function loadCandles(){
   if(B.candles.type==="none"){
     S.kl=[];$("candles").innerHTML="";
     $("c_live").className="live off";$("c_live").textContent="";
-    $("c_note").innerHTML="🔬 Este laboratorio no usa gráfico de velas. Mira la <b>CURVA DE EQUITY</b> de abajo: sube en verde durante semanas… y luego se desploma a cero. Ese es el martingala.";
+    $("c_note").innerHTML=B.sim
+      ? "🎲 Este agente no corrió sobre precios reales, sino sobre un mercado <b>sintético</b> generado a partir de velas de verdad. Por eso no hay gráfico de velas que mostrar: el precio de su historial no existió nunca. Mira la <b>CURVA DE EQUITY</b> de abajo — así se habría comportado la martingala en un mercado plausible."
+      : "🔬 Este laboratorio no usa gráfico de velas. Mira la <b>CURVA DE EQUITY</b> de abajo: sube en verde durante semanas… y luego se desploma a cero. Ese es el martingala.";
     return;
   }
   if(B.candles.type==="binance"){
