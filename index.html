@@ -93,6 +93,35 @@ body{
 .tooltip{position:absolute;pointer-events:none;background:rgba(13,19,28,.95);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.55;z-index:5;display:none;min-width:150px;box-shadow:0 8px 24px rgba(0,0,0,.5);backdrop-filter:blur(8px)}
 .tooltip .d{color:var(--dim);font-size:11px;margin-bottom:3px}
 .cnote{color:var(--dim);font-size:12.5px;margin-top:10px;line-height:1.5}
+/* --- Monte Carlo --- */
+.mcrow{display:grid;grid-template-columns:92px 1fr 78px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--cardline)}
+.mcrow:last-child{border-bottom:0}
+.mcname{font-size:12.5px;font-weight:700}
+.mcname small{display:block;font-weight:500;color:var(--dimmer);font-size:10.5px}
+.mcbar{position:relative;height:26px}
+.mcbar .axis{position:absolute;left:0;right:0;top:12px;height:2px;background:rgba(255,255,255,.07);border-radius:2px}
+.mcbar .whisk{position:absolute;top:11px;height:4px;background:rgba(255,255,255,.16);border-radius:3px}
+.mcbar .box{position:absolute;top:6px;height:14px;background:rgba(90,160,255,.28);border:1px solid rgba(90,160,255,.5);border-radius:4px}
+.mcbar .med{position:absolute;top:4px;width:2px;height:18px;background:#7fb3ff;border-radius:2px}
+.mcbar .base{position:absolute;top:2px;width:1px;height:22px;background:rgba(255,255,255,.22)}
+.mcbar .obs{position:absolute;top:6px;width:13px;height:13px;border-radius:50%;transform:translateX(-6px);
+  border:2px solid var(--bg);box-shadow:0 0 0 1px rgba(0,0,0,.5)}
+.mcobs{text-align:right;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums}
+.mcobs small{display:block;font-weight:600;font-size:10px;color:var(--dimmer)}
+.mchead{display:grid;grid-template-columns:92px 1fr 78px;gap:10px;font-size:10px;text-transform:uppercase;
+  letter-spacing:.7px;color:var(--dimmer);font-weight:700;padding-bottom:6px}
+.mcleg{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--dim);margin-top:12px;align-items:center}
+.mcleg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.mcwarn{background:rgba(255,90,90,.09);border:1px solid rgba(255,90,90,.25);border-radius:10px;
+  padding:9px 12px;margin-top:12px;font-size:12px;color:#ffb3b3;line-height:1.5}
+@media(max-width:640px){
+  /* en movil la barra necesita el ancho completo: nombre y cifra arriba, barra debajo */
+  .mchead{display:none}
+  .mcrow{grid-template-columns:1fr auto;gap:2px 10px;padding:12px 0}
+  .mcname{grid-column:1;grid-row:1}
+  .mcobs{grid-column:2;grid-row:1;align-self:center}
+  .mcbar{grid-column:1/-1;grid-row:2;margin-top:4px}
+}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--cardline);white-space:nowrap}
 th{color:var(--dimmer);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.6px}
@@ -182,6 +211,18 @@ tr:last-child td{border-bottom:none}
       <div class="card">
         <div class="cardhead"><span class="t">Operaciones</span></div>
         <div id="trades"><div class="empty">…</div></div>
+      </div>
+
+      <div class="card" id="mc_card" style="display:none">
+        <div class="cardhead">
+          <span class="t">Monte Carlo · ¿fue suerte o es la estrategia?</span>
+          <span style="margin-left:auto;display:flex;gap:6px">
+            <button class="tf on" id="mc_b_neutral" onclick="setMC('neutral')">Sin deriva</button>
+            <button class="tf" id="mc_b_real" onclick="setMC('real')">Deriva real</button>
+          </span>
+        </div>
+        <div id="mc_body"></div>
+        <div class="cnote" id="mc_note"></div>
       </div>
     </div>
   </div>
@@ -518,13 +559,81 @@ async function refreshAll(){
 }
 function manual(){$("refbtn").classList.add("spin");$("fresh").textContent="actualizando…";refreshAll();loadCandles();}
 
+/* ================= Monte Carlo ================= */
+const MC={data:{},modo:"neutral"};
+async function loadMC(){
+  for(const m of ["neutral","real"]){
+    try{MC.data[m]=JSON.parse(await fetchText("montecarlo_"+m+".json"));}catch(e){MC.data[m]=null;}
+  }
+  if(MC.data.neutral||MC.data.real){$("mc_card").style.display="";renderMC();}
+}
+function setMC(m){
+  MC.modo=m;
+  $("mc_b_neutral").classList.toggle("on",m==="neutral");
+  $("mc_b_real").classList.toggle("on",m==="real");
+  renderMC();
+}
+function renderMC(){
+  const D=MC.data[MC.modo]; if(!D){$("mc_body").innerHTML='<div class="empty">Sin datos.</div>';return;}
+  const cap=D.capital, ags=Object.keys(D.sim);
+  // escala comun a todos los agentes
+  let lo=cap,hi=cap;
+  ags.forEach(k=>{const s=D.sim[k],o=D.observado[k];
+    lo=Math.min(lo,s.p05,o?o.equity:cap); hi=Math.max(hi,s.p95,o?o.equity:cap);});
+  const pad=(hi-lo)*.06||1; lo-=pad; hi+=pad;
+  const X=v=>((v-lo)/(hi-lo)*100);
+  let h='<div class="mchead"><span>Agente</span><span>Distribución de '+D.paths+
+        ' simulaciones · '+D.dias+' días</span><span style="text-align:right">Real</span></div>';
+  ags.forEach(k=>{
+    const s=D.sim[k], o=D.observado[k];
+    const obs=o?o.equity:null;
+    const fuera = obs!=null && (obs<s.p05||obs>s.p95);
+    const col = obs==null?"":(obs>=cap?"var(--green)":"var(--red)");
+    const dot = obs==null?"":`<div class="obs" style="left:${X(obs)}%;background:${col}" title="real ${obs.toFixed(2)}"></div>`;
+    h+=`<div class="mcrow">
+      <div class="mcname">${esc(k)}<small>${s.blown>0?("revienta "+s.blown.toFixed(1)+"%"):"no revienta"}</small></div>
+      <div class="mcbar">
+        <div class="axis"></div>
+        <div class="whisk" style="left:${X(s.p05)}%;width:${X(s.p95)-X(s.p05)}%"></div>
+        <div class="box" style="left:${X(s.p25)}%;width:${X(s.p75)-X(s.p25)}%"></div>
+        <div class="med" style="left:${X(s.med)}%"></div>
+        <div class="base" style="left:${X(cap)}%"></div>
+        ${dot}
+      </div>
+      <div class="mcobs" style="color:${col}">${obs==null?"—":"$"+obs.toFixed(0)}
+        <small>${fuera?"fuera del rango":"dentro"}</small></div>
+    </div>`;
+  });
+  $("mc_body").innerHTML=h+
+    '<div class="mcleg"><span><i style="background:rgba(90,160,255,.28);border:1px solid rgba(90,160,255,.5)"></i>50% central (p25–p75)</span>'+
+    '<span><i style="background:rgba(255,255,255,.16)"></i>90% (p05–p95)</span>'+
+    '<span><i style="background:#7fb3ff"></i>mediana simulada</span>'+
+    '<span><i style="background:var(--green);border-radius:50%"></i>resultado REAL del bot</span>'+
+    '<span><i style="background:rgba(255,255,255,.22)"></i>$1,000 (base)</span></div>';
+  const peor=Object.entries(D.sim).sort((a,b)=>b[1].blown-a[1].blown)[0];
+  const nota = MC.modo==="neutral"
+    ? `<b>Sin deriva</b> — caminos que no suben ni bajan en promedio, para aislar el riesgo de la <i>estrategia</i> sin que el resultado dependa de hacia dónde fue el mercado. `+
+      (peor[1].blown>0?`El peor es <b>${esc(peor[0])}</b>: revienta el <b>${peor[1].blown.toFixed(1)}%</b> de los ${D.paths} caminos (IC 95% ${peor[1].ic[0].toFixed(1)}–${peor[1].ic[1].toFixed(1)}%).`:"")
+    : `<b>Deriva real</b> — se inyecta el movimiento que de verdad tuvo cada mercado en estos ${D.dias} días `+
+      `(oro ${D.deriva_real_pct["GC=F"]>0?"+":""}${D.deriva_real_pct["GC=F"]}%, EUR ${D.deriva_real_pct["EURUSD=X"]>0?"+":""}${D.deriva_real_pct["EURUSD=X"]}%, `+
+      `JPY ${D.deriva_real_pct["USDJPY=X"]>0?"+":""}${D.deriva_real_pct["USDJPY=X"]}%). Sirve de <b>prueba de calibración</b>: si el modelo es bueno, los puntos reales caen dentro del rango.`;
+  $("mc_note").innerHTML=nota+
+    `<div class="mcwarn">⚠️ Un resultado bueno aquí <b>no</b> valida la martingala. Fíjate en la fila que revienta: `+
+    `su mediana puede ser la más alta de todas y aun así perder casi todo en el 5% peor de los casos. `+
+    `Eso es la firma de la estrategia, no un accidente.</div>`+
+    `<div style="margin-top:8px;font-size:11.5px;color:var(--dimmer)">${D.paths} simulaciones por agente · `+
+    `block bootstrap de velas reales de 1 minuto · capital base $${D.capital.toLocaleString()} · `+
+    `paso ${D.params.paso_pct.toFixed(3)}% · TP ${D.params.tp_pct.toFixed(3)}% · máx ${D.params.max_legs} piernas · `+
+    `generado ${esc(D.generado_utc)}</div>`;
+}
+
 buildUI();
 $("card_btc").classList.add("on");
 $("candles").addEventListener("pointermove",candleMove);
 $("candles").addEventListener("pointerleave",candleLeave);
 $("eqchart").addEventListener("pointermove",eqMove);
 $("eqchart").addEventListener("pointerleave",eqLeave);
-refreshAll();loadCandles();
+refreshAll();loadCandles();loadMC();
 setInterval(refreshAll,300000);
 setInterval(()=>{if(BOTS[S.sel].candles.type==="binance")loadCandles();},1800000);
 </script>
