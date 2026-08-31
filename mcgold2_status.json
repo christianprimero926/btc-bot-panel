@@ -1,0 +1,22 @@
+{
+  "updated_utc": "2026-08-31 21:49:26 UTC",
+  "symbol": "XAUUSD",
+  "price": 4151.8955,
+  "sma": 4151.8955,
+  "sma_period": 0,
+  "position": "LONG",
+  "balance_usdt": 1240.84,
+  "equity": 1240.84,
+  "start_capital": 1000.0,
+  "reason": "🎲 SIMULACIÓN — no es un bot en vivo. Este es UN camino de los 300 que se generaron para XAUUSD ×2 en 43 días: el que terminó más cerca de la mediana, para que se pueda comparar con la curva del bot real (que también es un solo camino). En el conjunto: mediana $1,241, rango 90% $340–$2,015, termina en verde el 69% de las veces, y REVIENTA el 46.7% (IC 95% 41.1–52.3%). Deriva usada: neutral. ⚠️ Ojo: una mediana alta y una cola catastrófica conviven en la misma martingala.",
+  "mart_won": 2066,
+  "mart_dd": 0.0,
+  "mart_blown": true,
+  "mart_legs": 7,
+  "sim": true,
+  "sim_paths": 300,
+  "sim_p05": 339.77,
+  "sim_med": 1240.84,
+  "sim_p95": 2014.84,
+  "sim_blown_pct": 46.7
+}

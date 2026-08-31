@@ -1,0 +1,22 @@
+{
+  "updated_utc": "2026-08-31 21:49:26 UTC",
+  "symbol": "EURUSD",
+  "price": 1.1661,
+  "sma": 1.1661,
+  "sma_period": 0,
+  "position": "LONG",
+  "balance_usdt": 1002.78,
+  "equity": 1002.78,
+  "start_capital": 1000.0,
+  "reason": "🎲 SIMULACIÓN — no es un bot en vivo. Este es UN camino de los 300 que se generaron para EURUSD ×1.5 en 43 días: el que terminó más cerca de la mediana, para que se pueda comparar con la curva del bot real (que también es un solo camino). En el conjunto: mediana $1,003, rango 90% $966–$1,013, termina en verde el 55% de las veces, y no reventó en ningún camino. Deriva usada: neutral. ⚠️ Ojo: una mediana alta y una cola catastrófica conviven en la misma martingala.",
+  "mart_won": 40,
+  "mart_dd": 0.0,
+  "mart_blown": false,
+  "mart_legs": 7,
+  "sim": true,
+  "sim_paths": 300,
+  "sim_p05": 965.88,
+  "sim_med": 1002.78,
+  "sim_p95": 1013.39,
+  "sim_blown_pct": 0.0
+}

@@ -66,6 +66,8 @@ body{
 .badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.3px;margin-left:auto;white-space:nowrap}
 .badge.long{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.35)}
 .badge.cash{background:rgba(255,255,255,.06);color:var(--dim);border:1px solid var(--cardline)}
+.badge.sim{background:rgba(124,58,237,.18);color:#c4a8ff;border:1px solid rgba(124,58,237,.45)}
+.botcard.simc{border-style:dashed}
 .about{background:var(--card);border:1px solid var(--cardline);border-radius:var(--radius);padding:16px;color:var(--dim);font-size:12.5px;line-height:1.55;backdrop-filter:blur(12px)}
 .about b{color:var(--txt)}
 .about .t{font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:700;color:var(--dimmer);margin-bottom:8px}
@@ -258,9 +260,22 @@ const BOTS={
     files:{status:"mjpy15_status.json",eq:"mjpy15_equity_history.csv",tr:"mjpy15_trades.csv"},candles:{type:"csv",file:"mjpy15_candles.csv",tfs:["1d"],def:"1d"}},
   mjpy2:{icon:"🔬",name:"Martingala USD/JPY · ×2",sym:"USDJPY ×2 · vivo",short:"🔬 JPY ×2",smaN:0,danger:true,
     files:{status:"mjpy2_status.json",eq:"mjpy2_equity_history.csv",tr:"mjpy2_trades.csv"},candles:{type:"csv",file:"mjpy2_candles.csv",tfs:["1d"],def:"1d"}},
+  /* --- gemelos SIMULADOS (Monte Carlo): mismo motor, precios sintéticos --- */
+  mcgold15:{icon:"🎲",name:"SIM · Oro ×1.5",sym:"XAUUSD ×1.5 · simulado",short:"🎲 Oro ×1.5",smaN:0,sim:true,
+    files:{status:"mcgold15_status.json",eq:"mcgold15_equity_history.csv"},candles:{type:"csv",file:"mgold15_candles.csv",tfs:["1d"],def:"1d"}},
+  mcgold2:{icon:"🎲",name:"SIM · Oro ×2",sym:"XAUUSD ×2 · simulado",short:"🎲 Oro ×2",smaN:0,sim:true,
+    files:{status:"mcgold2_status.json",eq:"mcgold2_equity_history.csv"},candles:{type:"csv",file:"mgold2_candles.csv",tfs:["1d"],def:"1d"}},
+  mceur15:{icon:"🎲",name:"SIM · EUR/USD ×1.5",sym:"EURUSD ×1.5 · simulado",short:"🎲 EUR ×1.5",smaN:0,sim:true,
+    files:{status:"mceur15_status.json",eq:"mceur15_equity_history.csv"},candles:{type:"csv",file:"meur15_candles.csv",tfs:["1d"],def:"1d"}},
+  mceur2:{icon:"🎲",name:"SIM · EUR/USD ×2",sym:"EURUSD ×2 · simulado",short:"🎲 EUR ×2",smaN:0,sim:true,
+    files:{status:"mceur2_status.json",eq:"mceur2_equity_history.csv"},candles:{type:"csv",file:"meur2_candles.csv",tfs:["1d"],def:"1d"}},
+  mcjpy15:{icon:"🎲",name:"SIM · USD/JPY ×1.5",sym:"USDJPY ×1.5 · simulado",short:"🎲 JPY ×1.5",smaN:0,sim:true,
+    files:{status:"mcjpy15_status.json",eq:"mcjpy15_equity_history.csv"},candles:{type:"csv",file:"mjpy15_candles.csv",tfs:["1d"],def:"1d"}},
+  mcjpy2:{icon:"🎲",name:"SIM · USD/JPY ×2",sym:"USDJPY ×2 · simulado",short:"🎲 JPY ×2",smaN:0,sim:true,
+    files:{status:"mcjpy2_status.json",eq:"mcjpy2_equity_history.csv"},candles:{type:"csv",file:"mjpy2_candles.csv",tfs:["1d"],def:"1d"}},
 };
 const KEYS=Object.keys(BOTS);
-const REAL_KEYS=KEYS.filter(k=>!BOTS[k].danger);   // portafolio real (excluye laboratorios)
+const REAL_KEYS=KEYS.filter(k=>!BOTS[k].danger&&!BOTS[k].sim); // portafolio real: sin laboratorios ni simulados
 const KHOSTS=["https://data-api.binance.vision","https://api.binance.com"];
 const WSHOSTS=["wss://data-stream.binance.vision/ws/","wss://stream.binance.com:9443/ws/"];
 const S={sel:"btc",data:{},tf:"4h",kl:[],ws:null,gen:0,freshest:0,wsLive:false,busy:false};
@@ -322,14 +337,20 @@ function renderCard(key){
   eqEl.textContent=money(s.equity);
   const r=$("cr_"+key);r.textContent=pctf(ret)+"  ·  "+signMoney(net);r.className="rt "+cls(net||0);
   const b=$("cb_"+key);const long=s.position==="LONG";
+  if(BOTS[key].sim){b.className="badge sim";b.textContent="🎲 SIM";$("card_"+key).classList.add("simc");}
+  else
   if(BOTS[key].danger){b.className="badge dgr";b.textContent=s.mart_blown?"💀 RIP":"🔬 LAB";$("card_"+key).classList.add("dgr");}
   else{b.className="badge "+(long?"long":"cash");b.textContent=long?"● LONG":"○ CASH";}
-  drawSpark("sp_"+key,D.eq.map(x=>x.v));
+  drawSpark("sp_"+key,D.eq.map(x=>x.v),D.status&&D.status.start_capital);
 }
-function drawSpark(id,v){const svg=$(id);svg.innerHTML="";if(v.length<2)return;
+function drawSpark(id,v,base){const svg=$(id);svg.innerHTML="";if(v.length<2)return;
   const W=240,H=36,mn=Math.min(...v),mx=Math.max(...v),rg=(mx-mn)||1;
   const x=i=>i*W/(v.length-1),y=n=>H-3-(n-mn)/rg*(H-6);
-  const up=v[v.length-1]>=v[0],c=up?"#22c55e":"#ef4444";
+  // El color usa el MISMO criterio que el porcentaje de la tarjeta: el resultado
+  // contra el capital inicial. Antes comparaba el último punto contra el primero
+  // del historial guardado, que se recorta -> línea verde con número rojo.
+  const ref=Number.isFinite(base)?base:v[0];
+  const up=v[v.length-1]>=ref,c=up?"#22c55e":"#ef4444";
   svg.innerHTML=`<polyline points="${v.map((n,i)=>x(i)+","+y(n)).join(" ")}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round"/>`;}
 function renderHero(){
   let tot=0,base=0,cnt=0;
@@ -362,7 +383,8 @@ function renderDetail(){
   if(s){
     const long=s.position==="LONG";
     const b=$("d_badge");
-    if(B.danger){b.className="badge dgr";b.textContent=s.mart_blown?"💀 REVENTADO":"🔬 operando";}
+    if(B.sim){b.className="badge sim";b.textContent="🎲 SIMULADO";}
+    else if(B.danger){b.className="badge dgr";b.textContent=s.mart_blown?"💀 REVENTADO":"🔬 operando";}
     else{b.className="badge "+(long?"long":"cash");b.textContent=long?"● COMPRADO (LONG)":"○ EN CASH (fuera)";}
     $("d_price").textContent=money(s.price);
     if(B.danger){

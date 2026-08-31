@@ -1,0 +1,22 @@
+{
+  "updated_utc": "2026-08-31 21:49:26 UTC",
+  "symbol": "USDJPY",
+  "price": 160.9776,
+  "sma": 160.9776,
+  "sma_period": 0,
+  "position": "LONG",
+  "balance_usdt": 1034.51,
+  "equity": 1034.51,
+  "start_capital": 1000.0,
+  "reason": "🎲 SIMULACIÓN — no es un bot en vivo. Este es UN camino de los 300 que se generaron para USDJPY ×2 en 43 días: el que terminó más cerca de la mediana, para que se pueda comparar con la curva del bot real (que también es un solo camino). En el conjunto: mediana $1,035, rango 90% $883–$1,057, termina en verde el 69% de las veces, y no reventó en ningún camino. Deriva usada: neutral. ⚠️ Ojo: una mediana alta y una cola catastrófica conviven en la misma martingala.",
+  "mart_won": 91,
+  "mart_dd": 0.0,
+  "mart_blown": false,
+  "mart_legs": 6,
+  "sim": true,
+  "sim_paths": 300,
+  "sim_p05": 883.02,
+  "sim_med": 1034.51,
+  "sim_p95": 1057.24,
+  "sim_blown_pct": 0.0
+}
