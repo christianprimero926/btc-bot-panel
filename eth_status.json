@@ -1,0 +1,13 @@
+{
+  "updated_utc": "2026-09-02 19:06:38 UTC",
+  "symbol": "ETHUSDT",
+  "price": 2395.22,
+  "sma": 2044.67,
+  "sma_period": 50,
+  "position": "LONG",
+  "balance_usdt": 0.0,
+  "equity": 999.0,
+  "start_capital": 1000.0,
+  "action": "BUY",
+  "reason": "Precio 2418.57 > SMA50 2044.67 (1d) -> LONG"
+}
