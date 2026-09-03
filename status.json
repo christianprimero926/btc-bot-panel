@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-09-03 12:51:03 UTC",
+  "updated_utc": "2026-09-03 17:52:55 UTC",
   "symbol": "BTCUSDT",
-  "price": 78368.53,
+  "price": 81103.99,
   "sma": 66284.84,
   "sma_period": 100,
   "position": "LONG",
   "balance_usdt": 0.0,
-  "equity": 1129.2,
+  "equity": 1168.57,
   "start_capital": 1000.0,
   "action": "HOLD_LONG",
-  "reason": "LONG abierto | flotante +13.03% | cierre 77340.01 > SMA 66284.84"
+  "reason": "LONG abierto | flotante +16.97% | cierre 77340.01 > SMA 66284.84"
 }
