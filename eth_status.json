@@ -1,13 +1,13 @@
 {
-  "updated_utc": "2026-10-03 05:22:40 UTC",
+  "updated_utc": "2026-10-03 11:43:24 UTC",
   "symbol": "ETHUSDT",
-  "price": 2677.49,
+  "price": 2685.4,
   "sma": 2468.56,
   "sma_period": 50,
   "position": "LONG",
   "balance_usdt": 0.0,
-  "equity": 1116.73,
+  "equity": 1120.03,
   "start_capital": 1000.0,
   "action": "HOLD_LONG",
-  "reason": "LONG abierto | flotante +11.78% | cierre 2668.59 > SMA 2468.56"
+  "reason": "LONG abierto | flotante +12.11% | cierre 2668.59 > SMA 2468.56"
 }
