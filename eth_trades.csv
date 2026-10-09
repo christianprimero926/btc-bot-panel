@@ -1,2 +1,3 @@
 fecha_utc,accion,symbol,precio,cantidad,pnl_pct,equity_despues,motivo
 2026-09-02 19:06:38 UTC,BUY,ETHUSDT,2395.22,0.417081,,999.00,Precio 2418.57 > SMA50 2044.67 (1d) -> LONG
+2026-10-09 00:24:50 UTC,SELL,ETHUSDT,2476.25,0.417081,+3.38,1031.76,Precio 2474.80 < SMA50 2551.47 -> a CASH
